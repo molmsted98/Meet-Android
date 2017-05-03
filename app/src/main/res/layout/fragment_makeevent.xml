@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary">
+
+    <ProgressBar
+        android:id="@+id/pbCreate"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_gravity="center"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:id="@+id/llCreateEvent">
+
+        <EditText
+            android:id="@+id/etEventName"
+            android:layout_width="287dp"
+            android:layout_marginTop="200dp"
+            android:layout_gravity="center"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorAccent"
+            android:hint="Event Name"
+            android:maxLines="1" />
+
+        <LinearLayout
+            android:layout_width="287dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:layout_gravity="center">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Make Event Public?"
+                android:textColor="#ffffff"
+                android:textSize="20dp"/>
+            <Switch
+                android:paddingLeft="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/sPublic"
+                android:checked="true"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="287dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:id="@+id/llInvites">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Allow Friends to Invite?"
+                android:textColor="#ffffff"
+                android:textSize="20dp"/>
+            <Switch
+                android:paddingLeft="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/sInvites"
+                android:checked="true"/>
+        </LinearLayout>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:id="@+id/btnCreateEvent"
+            android:padding="8dp"
+            android:textColor="@color/colorAccent"
+            android:text="Create Event"
+            android:background="@drawable/btn_login"/>
+
+    </LinearLayout>
+
+</LinearLayout>
