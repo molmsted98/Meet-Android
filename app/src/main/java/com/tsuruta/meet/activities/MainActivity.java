@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity
         //Close the app only when back is pressed on the main screen.
         //TODO: This is a pretty trash solution to the problem, fix it please.
         //Problem: You shouldn't be able to switch from MainActivity back to LoginActivity, unless you click LogOut button.
-        if(getSupportFragmentManager().getBackStackEntryAt(getSupportFragmentManager().getBackStackEntryCount()).getName().equals("eventList"))
+        if(getSupportFragmentManager().getBackStackEntryAt(getSupportFragmentManager().getBackStackEntryCount() - 1).getName().equals("eventList"))
         {
             this.finishAffinity();
         }
