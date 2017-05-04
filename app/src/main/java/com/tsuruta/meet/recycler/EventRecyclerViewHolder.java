@@ -6,14 +6,9 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.tsuruta.meet.R;
-import com.tsuruta.meet.recycler.EventRecyclerAdapter;
 
-/**
- * Created by michael on 5/1/17.
- */
-
-public class EventRecyclerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-
+public class EventRecyclerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
+{
     EventRecyclerAdapter parent;
     TextView tvEventTitle, tvEventCreator, tvEventExpires;
     Button btnJoin;

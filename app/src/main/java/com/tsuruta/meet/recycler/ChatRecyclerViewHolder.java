@@ -8,11 +8,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tsuruta.meet.R;
-import com.tsuruta.meet.recycler.ChatRecyclerAdapter;
-
-/**
- * Created by michael on 5/1/17.
- */
 
 public class ChatRecyclerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 

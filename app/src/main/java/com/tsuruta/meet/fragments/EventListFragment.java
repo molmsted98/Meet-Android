@@ -24,10 +24,6 @@ import com.tsuruta.meet.objects.Event;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-/**
- * Created by michael on 5/1/17.
- */
-
 public class EventListFragment extends Fragment {
 
     FragmentActivity faActivity;

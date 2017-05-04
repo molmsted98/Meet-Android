@@ -1,15 +1,9 @@
 package com.tsuruta.meet.objects;
 
-import android.widget.ProgressBar;
-
 import com.google.firebase.database.Exclude;
 
 import java.util.HashMap;
 import java.util.Map;
-
-/**
- * Created by michael on 5/1/17.
- */
 
 public class Chat {
     public String sender;
@@ -45,7 +39,8 @@ public class Chat {
     }
 
     @Exclude
-    public Map<String, Object> toMap() {
+    public Map<String, Object> toMap()
+    {
         HashMap<String, Object> result = new HashMap<>();
 
         result.put("sender", sender);

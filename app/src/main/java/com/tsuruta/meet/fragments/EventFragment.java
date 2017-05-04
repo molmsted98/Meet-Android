@@ -22,8 +22,6 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.GetTokenResult;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -35,18 +33,13 @@ import com.tsuruta.meet.activities.MainActivity;
 import com.tsuruta.meet.objects.Chat;
 import com.tsuruta.meet.objects.Event;
 import com.tsuruta.meet.recycler.ChatRecyclerAdapter;
-import com.tsuruta.meet.recycler.EventRecyclerAdapter;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import static com.google.android.gms.internal.zzt.TAG;
 
-/**
- * Created by michael on 5/1/17.
- */
-
-public class EventFragment extends Fragment implements View.OnClickListener, View.OnFocusChangeListener {
+public class EventFragment extends Fragment implements View.OnClickListener, View.OnFocusChangeListener
+{
     FragmentActivity faActivity;
     LinearLayout llLayout;
     MainActivity parent;
@@ -60,14 +53,16 @@ public class EventFragment extends Fragment implements View.OnClickListener, Vie
     private ChatRecyclerAdapter adapter;
     boolean firstTime;
 
-    public static EventFragment newInstance(Event event) {
+    public static EventFragment newInstance(Event event)
+    {
         EventFragment ef = new EventFragment();
         ef.event = event;
         return ef;
     }
 
     @Override
-    public void onStart() {
+    public void onStart()
+    {
         super.onStart();
         firstTime = true;
         mAuth = FirebaseAuth.getInstance();
@@ -75,7 +70,8 @@ public class EventFragment extends Fragment implements View.OnClickListener, Vie
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
         faActivity = super.getActivity();
         parent = (MainActivity) getActivity();
         llLayout = (LinearLayout) inflater.inflate(R.layout.fragment_event, container, false);
@@ -100,8 +96,10 @@ public class EventFragment extends Fragment implements View.OnClickListener, Vie
     }
 
     @Override
-    public void onClick(View view) {
-        if (view == ivSendMessage) {
+    public void onClick(View view)
+    {
+        if (view == ivSendMessage)
+        {
             String message = etMessage.getText().toString();
             Chat newChat = new Chat("Sender Name", mAuth.getCurrentUser().getUid(), event.getUid(), message, System.currentTimeMillis());
             sendMessageToFirebaseEvent(parent.getApplicationContext(), newChat);
@@ -121,8 +119,8 @@ public class EventFragment extends Fragment implements View.OnClickListener, Vie
         }
     }
 
-    public void sendMessageToFirebaseEvent(final Context context,
-                                           final Chat chat) {
+    public void sendMessageToFirebaseEvent(final Context context, final Chat chat)
+    {
         final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
 
         Log.e(TAG, "sendMessageToFirebaseEvent: success");
@@ -130,77 +128,88 @@ public class EventFragment extends Fragment implements View.OnClickListener, Vie
                 .child(chat.getEventUid())
                 .child(String.valueOf(chat.timestamp))
                 .setValue(chat.toMap())
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                .addOnCompleteListener(new OnCompleteListener<Void>()
+                {
                     @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            //Show cute lil' sent icon
-                        } else {
-                            //Allow user to retry sending
+                    public void onComplete(@NonNull Task<Void> task)
+                    {
+                        if (task.isSuccessful())
+                        {
+                            //TODO: Show cute lil' sent icon
+                        }
+                        else
+                        {
+                            //TODO: Allow user to retry sending
                             Toast.makeText(context, "Failed to send message", Toast.LENGTH_LONG).show();
                         }
                     }
                 });
     }
 
-    public void getAllChats() {
+    public void getAllChats()
+    {
         FirebaseDatabase.getInstance()
                 .getReference()
                 .child("chats")
                 .child(event.getUid())
-                .addListenerForSingleValueEvent(new ValueEventListener() {
+                .addListenerForSingleValueEvent(new ValueEventListener()
+                {
                     @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
+                    public void onDataChange(DataSnapshot dataSnapshot)
+                    {
                         FirebaseDatabase.getInstance()
                                 .getReference()
                                 .child("chats")
                                 .child(event.getUid())
-                                .addChildEventListener(new ChildEventListener() {
+                                .addChildEventListener(new ChildEventListener()
+                                {
                                     @Override
-                                    public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                                    public void onChildAdded(DataSnapshot dataSnapshot, String s)
+                                    {
                                         Chat chat = dataSnapshot.getValue(Chat.class);
                                         chats.add(chat);
 
-                                        if (firstTime) {
+                                        if (firstTime)
+                                        {
                                             firstTime = false;
                                             setupRecycler();
-                                        } else {
+                                        }
+                                        else
+                                        {
                                             recyclerView.scrollToPosition(chats.size() - 1);
                                             adapter.updateList(chats);
                                         }
                                     }
 
                                     @Override
-                                    public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-                                    }
-
-                                    @Override
-                                    public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-                                    }
-
-                                    @Override
-                                    public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-                                    }
-
-                                    @Override
-                                    public void onCancelled(DatabaseError databaseError) {
+                                    public void onCancelled(DatabaseError databaseError)
+                                    {
                                         // Unable to get message.
+                                        Toast.makeText(faActivity.getApplicationContext(), "Unable to retrieve new chat", Toast.LENGTH_LONG).show();
                                     }
+
+                                    @Override
+                                    public void onChildChanged(DataSnapshot dataSnapshot, String s){}
+
+                                    @Override
+                                    public void onChildRemoved(DataSnapshot dataSnapshot){}
+
+                                    @Override
+                                    public void onChildMoved(DataSnapshot dataSnapshot, String s){}
                                 });
                     }
 
                     @Override
-                    public void onCancelled(DatabaseError databaseError) {
+                    public void onCancelled(DatabaseError databaseError)
+                    {
                         // Unable to retrieve chats.
                         Toast.makeText(faActivity.getApplicationContext(), "Unable to retrieve chats", Toast.LENGTH_LONG).show();
                     }
                 });
     }
 
-    private void setupRecycler() {
+    private void setupRecycler()
+    {
         recyclerView.setHasFixedSize(false);
         layoutManager = new LinearLayoutManager(faActivity);
         recyclerView.setLayoutManager(layoutManager);
@@ -208,7 +217,8 @@ public class EventFragment extends Fragment implements View.OnClickListener, Vie
         recyclerView.setAdapter(adapter);
     }
 
-    public void hideKeyboard(View view) {
+    public void hideKeyboard(View view)
+    {
         InputMethodManager inputMethodManager =(InputMethodManager)parent.getSystemService(Activity.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }

@@ -14,11 +14,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
-/**
- * Created by michael on 5/1/17.
- */
-
-public class EventRecyclerAdapter extends RecyclerView.Adapter<EventRecyclerViewHolder> {
+public class EventRecyclerAdapter extends RecyclerView.Adapter<EventRecyclerViewHolder>
+{
     private ArrayList<Event> events;
     private EventListFragment parent;
 

@@ -1,7 +1,6 @@
 package com.tsuruta.meet.recycler;
 
 import android.support.v7.widget.RecyclerView;
-import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,17 +9,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.tsuruta.meet.R;
 import com.tsuruta.meet.fragments.EventFragment;
 import com.tsuruta.meet.objects.Chat;
-import com.tsuruta.meet.objects.Chat;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Locale;
 
-/**
- * Created by michael on 5/1/17.
- */
-
-public class ChatRecyclerAdapter extends RecyclerView.Adapter<ChatRecyclerViewHolder> {
+public class ChatRecyclerAdapter extends RecyclerView.Adapter<ChatRecyclerViewHolder>
+{
     private ArrayList<Chat> chats;
     private EventFragment parent;
 

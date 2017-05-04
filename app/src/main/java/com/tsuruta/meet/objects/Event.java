@@ -1,22 +1,15 @@
 package com.tsuruta.meet.objects;
 
 import com.google.firebase.database.Exclude;
-import com.tsuruta.meet.objects.Chat;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
-/**
- * Created by michael on 5/1/17.
- */
 
 public class Event
 {
     private String eventTitle, eventCreator, eventCreatorName;
     private long timestamp;
     private boolean mPublic, mInvite;
-    private ArrayList<Chat> eventChats = new ArrayList<>();
     private String uid;
 
     public Event(){}
@@ -104,7 +97,8 @@ public class Event
     }
 
     @Exclude
-    public Map<String, Object> toMap() {
+    public Map<String, Object> toMap()
+    {
         HashMap<String, Object> result = new HashMap<>();
         result.put("title", eventTitle);
         result.put("creator", eventCreator);
@@ -115,5 +109,4 @@ public class Event
 
         return result;
     }
-
 }

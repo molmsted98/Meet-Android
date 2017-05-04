@@ -28,19 +28,12 @@ import com.tsuruta.meet.R;
 import com.tsuruta.meet.activities.MainActivity;
 import com.tsuruta.meet.objects.Event;
 
-import java.util.ArrayList;
 import java.util.Random;
-
-/**
- * Created by michael on 5/1/17.
- */
 
 public class MakeEventFragment extends Fragment implements View.OnClickListener
 {
-
     FragmentActivity faActivity;
     LinearLayout llLayout, llInvites, llCreateEvent;
-    ArrayList<Event> events = new ArrayList<>();
     MainActivity parent;
     EditText etEventName;
     Button btnCreateEvent;
@@ -100,13 +93,18 @@ public class MakeEventFragment extends Fragment implements View.OnClickListener
                     .child("events")
                     .child(UID)
                     .setValue(newEvent.toMap())
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    .addOnCompleteListener(new OnCompleteListener<Void>()
+                    {
                         @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()) {
+                        public void onComplete(@NonNull Task<Void> task)
+                        {
+                            if (task.isSuccessful())
+                            {
                                 // successfully added event, update member lists
                                 updateMembers(currentUser, UID);
-                            } else {
+                            }
+                            else
+                            {
                                 // failed to add event
                                 Toast.makeText(faActivity.getApplicationContext(), "Failed to create event", Toast.LENGTH_LONG).show();
                             }
@@ -135,32 +133,42 @@ public class MakeEventFragment extends Fragment implements View.OnClickListener
                 .getReference()
                 .child("members/" + eventUid + "/" + currentUser.getUid())
                 .setValue(true)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                .addOnCompleteListener(new OnCompleteListener<Void>()
+                {
                     @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
+                    public void onComplete(@NonNull Task<Void> task)
+                    {
+                        if (task.isSuccessful())
+                        {
                             //Add this event to the user object
                             FirebaseDatabase
                                     .getInstance()
                                     .getReference()
                                     .child("/" + "users" + "/" + currentUser.getUid() + "/events/" + eventUid)
                                     .setValue(true)
-                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    .addOnCompleteListener(new OnCompleteListener<Void>()
+                                    {
                                         @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            if (task.isSuccessful()) {
+                                        public void onComplete(@NonNull Task<Void> task)
+                                        {
+                                            if (task.isSuccessful())
+                                            {
                                                 showProgress(false);
                                                 faActivity.getSupportFragmentManager()
                                                         .beginTransaction()
                                                         .add(R.id.content_container, EventListFragment.newInstance(), "eventList")
                                                         .commit();
-                                            } else {
+                                            }
+                                            else
+                                            {
                                                 // failed to add event
                                                 Toast.makeText(faActivity.getApplicationContext(), "Failed to add event to user", Toast.LENGTH_LONG).show();
                                             }
                                         }
                                     });
-                        } else {
+                        }
+                        else
+                        {
                             // failed to add event
                             Toast.makeText(faActivity.getApplicationContext(), "Failed to add user to event", Toast.LENGTH_LONG).show();
                         }
@@ -172,35 +180,30 @@ public class MakeEventFragment extends Fragment implements View.OnClickListener
      * Shows the progress UI and hides the login form.
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-    private void showProgress(final boolean show) {
-        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-        // for very easy animations. If available, use these APIs to fade-in
-        // the progress spinner.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+    private void showProgress(final boolean show)
+    {
+        int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
-            llCreateEvent.setVisibility(show ? View.GONE : View.VISIBLE);
-            llCreateEvent.animate().setDuration(shortAnimTime).alpha(
-                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    llCreateEvent.setVisibility(show ? View.GONE : View.VISIBLE);
-                }
-            });
+        llCreateEvent.setVisibility(show ? View.GONE : View.VISIBLE);
+        llCreateEvent.animate().setDuration(shortAnimTime).alpha(
+                show ? 0 : 1).setListener(new AnimatorListenerAdapter()
+        {
+            @Override
+            public void onAnimationEnd(Animator animation)
+            {
+                llCreateEvent.setVisibility(show ? View.GONE : View.VISIBLE);
+            }
+        });
 
-            pbCreate.setVisibility(show ? View.VISIBLE : View.GONE);
-            pbCreate.animate().setDuration(shortAnimTime).alpha(
-                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    pbCreate.setVisibility(show ? View.VISIBLE : View.GONE);
-                }
-            });
-        } else {
-            // The ViewPropertyAnimator APIs are not available, so simply show
-            // and hide the relevant UI components.
-            pbCreate.setVisibility(show ? View.VISIBLE : View.GONE);
-            llCreateEvent.setVisibility(show ? View.GONE : View.VISIBLE);
-        }
+        pbCreate.setVisibility(show ? View.VISIBLE : View.GONE);
+        pbCreate.animate().setDuration(shortAnimTime).alpha(
+                show ? 1 : 0).setListener(new AnimatorListenerAdapter()
+        {
+            @Override
+            public void onAnimationEnd(Animator animation)
+            {
+                pbCreate.setVisibility(show ? View.VISIBLE : View.GONE);
+            }
+        });
     }
 }

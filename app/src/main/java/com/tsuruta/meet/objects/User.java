@@ -6,11 +6,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by michael on 5/1/17.
- */
-
-public class User {
+public class User
+{
     public String uid;
     public String phoneNum;
     public String firebaseToken;
@@ -30,18 +27,19 @@ public class User {
         events.add(eventId);
     }
 
+    public String getName()
+    {
+        return phoneNum;
+    }
+
     @Exclude
-    public Map<String, Object> toMap() {
+    public Map<String, Object> toMap()
+    {
         HashMap<String, Object> result = new HashMap<>();
         result.put("uid", uid);
         result.put("phoneNum", phoneNum);
         result.put("events", events);
 
         return result;
-    }
-
-    public String getName()
-    {
-        return phoneNum;
     }
 }

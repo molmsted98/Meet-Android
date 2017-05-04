@@ -11,14 +11,11 @@ import com.tsuruta.meet.fragments.EventListFragment;
 import com.tsuruta.meet.fragments.MakeEventFragment;
 import com.tsuruta.meet.R;
 
-/**
- * Created by michael on 5/1/17.
- */
-
 public class MainActivity extends AppCompatActivity
 {
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
@@ -36,18 +33,19 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.actions, menu);
         return true;
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId())
+        {
             case R.id.action_settings:
-                // User chose the "Favorite" action, mark the current item
-                // as a favorite...
                 return true;
 
             case R.id.action_newEvent:
@@ -62,12 +60,12 @@ public class MainActivity extends AppCompatActivity
                 // If we got here, the user's action was not recognized.
                 // Invoke the superclass to handle it.
                 return super.onOptionsItemSelected(item);
-
         }
     }
 
     @Override
-    public void onBackPressed() {
+    public void onBackPressed()
+    {
         //Close the app only when back is pressed on the main screen.
         //TODO: This is a pretty trash solution to the problem, fix it please.
         //Problem: You shouldn't be able to switch from MainActivity back to LoginActivity, unless you click LogOut button.
