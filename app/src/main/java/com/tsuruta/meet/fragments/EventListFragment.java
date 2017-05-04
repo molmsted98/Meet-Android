@@ -78,21 +78,25 @@ public class EventListFragment extends Fragment {
     {
         faActivity.getSupportFragmentManager()
                 .beginTransaction()
-                .add(R.id.content_container, EventFragment.newInstance(events.get(position)), "event")
-                .addToBackStack("event")
+                .add(R.id.content_container, EventFragment.newInstance(events.get(position)), getString(R.string.fragment_event_name))
+                .addToBackStack(getString(R.string.fragment_event_name))
                 .commit();
     }
 
-    public void getAllEventsFromFirebase() {
+    public void getAllEventsFromFirebase()
+    {
         FirebaseDatabase.getInstance()
                 .getReference()
-                .child("events")
-                .addListenerForSingleValueEvent(new ValueEventListener() {
+                .child(getString(R.string.db_events))
+                .addListenerForSingleValueEvent(new ValueEventListener()
+                {
                     @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
+                    public void onDataChange(DataSnapshot dataSnapshot)
+                    {
                         Iterator<DataSnapshot> dataSnapshots = dataSnapshot.getChildren()
                                 .iterator();
-                        while (dataSnapshots.hasNext()) {
+                        while (dataSnapshots.hasNext())
+                        {
                             DataSnapshot dataSnapshotChild = dataSnapshots.next();
                             Event event = dataSnapshotChild.getValue(Event.class);
                             events.add(event);
@@ -102,7 +106,8 @@ public class EventListFragment extends Fragment {
                     }
 
                     @Override
-                    public void onCancelled(DatabaseError databaseError) {
+                    public void onCancelled(DatabaseError databaseError)
+                    {
                         // Unable to retrieve events.
                         Toast.makeText(faActivity.getApplicationContext(), "Unable to retrieve events", Toast.LENGTH_LONG).show();
                     }

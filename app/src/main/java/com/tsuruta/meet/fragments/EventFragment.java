@@ -124,7 +124,7 @@ public class EventFragment extends Fragment implements View.OnClickListener, Vie
         final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
 
         Log.e(TAG, "sendMessageToFirebaseEvent: success");
-        databaseReference.child("chats")
+        databaseReference.child(getString(R.string.db_chats))
                 .child(chat.getEventUid())
                 .child(String.valueOf(chat.timestamp))
                 .setValue(chat.toMap())
@@ -150,7 +150,7 @@ public class EventFragment extends Fragment implements View.OnClickListener, Vie
     {
         FirebaseDatabase.getInstance()
                 .getReference()
-                .child("chats")
+                .child(getString(R.string.db_chats))
                 .child(event.getUid())
                 .addListenerForSingleValueEvent(new ValueEventListener()
                 {
@@ -159,7 +159,7 @@ public class EventFragment extends Fragment implements View.OnClickListener, Vie
                     {
                         FirebaseDatabase.getInstance()
                                 .getReference()
-                                .child("chats")
+                                .child(getString(R.string.db_chats))
                                 .child(event.getUid())
                                 .addChildEventListener(new ChildEventListener()
                                 {

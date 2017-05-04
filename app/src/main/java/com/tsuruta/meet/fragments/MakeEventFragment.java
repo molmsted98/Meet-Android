@@ -90,7 +90,7 @@ public class MakeEventFragment extends Fragment implements View.OnClickListener
 
             FirebaseDatabase.getInstance()
                     .getReference()
-                    .child("events")
+                    .child(getString(R.string.db_events))
                     .child(UID)
                     .setValue(newEvent.toMap())
                     .addOnCompleteListener(new OnCompleteListener<Void>()
@@ -131,7 +131,7 @@ public class MakeEventFragment extends Fragment implements View.OnClickListener
         //Add the user to members table
         FirebaseDatabase.getInstance()
                 .getReference()
-                .child("members/" + eventUid + "/" + currentUser.getUid())
+                .child(getString(R.string.db_members) + "/" + eventUid + "/" + currentUser.getUid())
                 .setValue(true)
                 .addOnCompleteListener(new OnCompleteListener<Void>()
                 {
@@ -144,7 +144,7 @@ public class MakeEventFragment extends Fragment implements View.OnClickListener
                             FirebaseDatabase
                                     .getInstance()
                                     .getReference()
-                                    .child("/" + "users" + "/" + currentUser.getUid() + "/events/" + eventUid)
+                                    .child("/" + getString(R.string.db_users) + "/" + currentUser.getUid() + "/" + getString(R.string.db_events) + "/" + eventUid)
                                     .setValue(true)
                                     .addOnCompleteListener(new OnCompleteListener<Void>()
                                     {

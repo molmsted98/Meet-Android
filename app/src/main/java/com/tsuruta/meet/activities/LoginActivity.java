@@ -161,7 +161,7 @@ public class LoginActivity extends AppCompatActivity
                                     firebaseUser.getEmail(), idToken);
                             FirebaseDatabase.getInstance()
                                     .getReference()
-                                    .child("users")
+                                    .child(getString(R.string.db_users))
                                     .child(firebaseUser.getUid())
                                     .setValue(user.toMap())
                                     .addOnCompleteListener(new OnCompleteListener<Void> ()

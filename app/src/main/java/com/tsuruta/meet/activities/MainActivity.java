@@ -26,8 +26,8 @@ public class MainActivity extends AppCompatActivity
             //TODO: Check to make sure the user is logged in before showing them the event list. Otherwise switch Activities.
             getSupportFragmentManager()
                     .beginTransaction()
-                    .add(R.id.content_container, EventListFragment.newInstance(), "eventList")
-                    .addToBackStack("eventList")
+                    .add(R.id.content_container, EventListFragment.newInstance(), getString(R.string.fragment_eventlist_name))
+                    .addToBackStack(getString(R.string.fragment_eventlist_name))
                     .commit();
         }
     }
@@ -51,8 +51,8 @@ public class MainActivity extends AppCompatActivity
             case R.id.action_newEvent:
                 getSupportFragmentManager()
                         .beginTransaction()
-                        .add(R.id.content_container, MakeEventFragment.newInstance(), "makeEvent")
-                        .addToBackStack("makeEvent")
+                        .add(R.id.content_container, MakeEventFragment.newInstance(), getString(R.string.fragment_makeevent_name))
+                        .addToBackStack(getString(R.string.fragment_makeevent_name))
                         .commit();
                 return true;
 
@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity
         //Close the app only when back is pressed on the main screen.
         //TODO: This is a pretty trash solution to the problem, fix it please.
         //Problem: You shouldn't be able to switch from MainActivity back to LoginActivity, unless you click LogOut button.
-        if(getSupportFragmentManager().getBackStackEntryAt(getSupportFragmentManager().getBackStackEntryCount() - 1).getName().equals("eventList"))
+        if(getSupportFragmentManager().getBackStackEntryAt(getSupportFragmentManager().getBackStackEntryCount() - 1).getName().equals(getString(R.string.fragment_eventlist_name)))
         {
             this.finishAffinity();
         }
