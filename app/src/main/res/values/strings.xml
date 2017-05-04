@@ -27,6 +27,7 @@
     <!-- Fragment Event List -->
     <string name="fragment_eventlist_name">eventList</string>
     <string name="join_button">Join Event</string>
+    <string name="no_events">You have no events.</string>
 
     <!-- Fragment Make Event -->
     <string name="fragment_makeevent_name">makeEvent</string>

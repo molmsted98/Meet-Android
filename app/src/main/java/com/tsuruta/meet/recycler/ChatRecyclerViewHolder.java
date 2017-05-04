@@ -1,5 +1,6 @@
 package com.tsuruta.meet.recycler;
 
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.View;
@@ -14,7 +15,6 @@ public class ChatRecyclerViewHolder extends RecyclerView.ViewHolder implements V
     ChatRecyclerAdapter parent;
     TextView tvMessage;
     LinearLayout llChat, llChatRow;
-    Button btnJoin;
 
     public ChatRecyclerViewHolder(ChatRecyclerAdapter parent, View itemView)
     {
@@ -45,18 +45,32 @@ public class ChatRecyclerViewHolder extends RecyclerView.ViewHolder implements V
     public void setSide(String side)
     {
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        int chatPadding = dpToPx(24);
+        int rowPadding = dpToPx(40);
 
         if(side.equals("left"))
         {
             params.gravity = Gravity.LEFT;
+            llChat.setBackground(ContextCompat.getDrawable(parent.getParent().getParent(), R.drawable.chat_left));
             llChat.setLayoutParams(params);
-            llChatRow.setPadding(0, 300, 0, 0);
+            tvMessage.setTextColor(ContextCompat.getColor(parent.getParent().getParent(), R.color.left_text));
+            llChatRow.setPadding(0, 0, rowPadding, 0);
+            llChat.setPadding(chatPadding,chatPadding,chatPadding,chatPadding);
         }
         else if(side.equals("right"))
         {
             params.gravity = Gravity.RIGHT;
+            llChat.setBackground(ContextCompat.getDrawable(parent.getParent().getParent(), R.drawable.chat_right));
             llChat.setLayoutParams(params);
-            llChatRow.setPadding(300, 0, 0, 0);
+            tvMessage.setTextColor(ContextCompat.getColor(parent.getParent().getParent(), R.color.right_text));
+            llChatRow.setPadding(rowPadding, 0, 0, 0);
+            llChat.setPadding(chatPadding,chatPadding,chatPadding,chatPadding);
         }
+    }
+
+    private int dpToPx(int dp)
+    {
+        final float scale = parent.getParent().getParent().getResources().getDisplayMetrics().density;
+        return (int) (dp * scale + 0.5f);
     }
 }

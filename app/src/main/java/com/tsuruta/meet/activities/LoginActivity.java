@@ -255,7 +255,7 @@ public class LoginActivity extends AppCompatActivity
         {
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            //getApplicationContext().startActivity(intent);
+            getApplicationContext().startActivity(intent);
         }
     }
 

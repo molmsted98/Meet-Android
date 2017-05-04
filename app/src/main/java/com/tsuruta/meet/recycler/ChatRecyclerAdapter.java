@@ -47,6 +47,11 @@ public class ChatRecyclerAdapter extends RecyclerView.Adapter<ChatRecyclerViewHo
         }
     }
 
+    public EventFragment getParent()
+    {
+        return parent;
+    }
+
     @Override
     public ChatRecyclerViewHolder onCreateViewHolder(ViewGroup viewGroup, int position)
     {

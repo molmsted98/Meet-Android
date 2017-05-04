@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
@@ -30,6 +31,7 @@ public class EventListFragment extends Fragment {
     LinearLayout llLayout;
     ArrayList<Event> events = new ArrayList<>();
     MainActivity parent;
+    TextView tvNoEvents;
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
     private EventRecyclerAdapter adapter;
@@ -53,8 +55,8 @@ public class EventListFragment extends Fragment {
         faActivity = super.getActivity();
         parent = (MainActivity)getActivity();
         llLayout = (LinearLayout)inflater.inflate(R.layout.fragment_eventlist, container, false);
-
         recyclerView = (RecyclerView)llLayout.findViewById(R.id.eventRecycler);
+        tvNoEvents = (TextView)llLayout.findViewById(R.id.tvNoEvents);
 
         return llLayout;
     }
@@ -67,6 +69,8 @@ public class EventListFragment extends Fragment {
 
     private void setupRecycler()
     {
+        recyclerView.setVisibility(View.VISIBLE);
+        tvNoEvents.setVisibility(View.GONE);
         recyclerView.setHasFixedSize(false);
         layoutManager = new LinearLayoutManager(faActivity);
         recyclerView.setLayoutManager(layoutManager);
@@ -101,8 +105,11 @@ public class EventListFragment extends Fragment {
                             Event event = dataSnapshotChild.getValue(Event.class);
                             events.add(event);
                         }
-                        //getEventCreatorNames();
-                        setupRecycler();
+                        if(events.size() > 0)
+                        {
+                            //getEventCreatorNames();
+                            setupRecycler();
+                        }
                     }
 
                     @Override

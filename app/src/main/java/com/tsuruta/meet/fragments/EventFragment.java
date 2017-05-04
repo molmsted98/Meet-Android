@@ -208,6 +208,11 @@ public class EventFragment extends Fragment implements View.OnClickListener, Vie
                 });
     }
 
+    public MainActivity getParent()
+    {
+        return parent;
+    }
+
     private void setupRecycler()
     {
         recyclerView.setHasFixedSize(false);
