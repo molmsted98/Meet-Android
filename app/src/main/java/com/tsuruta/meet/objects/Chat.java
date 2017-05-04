@@ -1,5 +1,7 @@
 package com.tsuruta.meet.objects;
 
+import android.widget.ProgressBar;
+
 import com.google.firebase.database.Exclude;
 
 import java.util.HashMap;
@@ -30,6 +32,16 @@ public class Chat {
     public String getEventUid()
     {
         return eventUid;
+    }
+
+    public String getMessage()
+    {
+        return message;
+    }
+
+    public String getSenderUid()
+    {
+        return senderUid;
     }
 
     @Exclude
