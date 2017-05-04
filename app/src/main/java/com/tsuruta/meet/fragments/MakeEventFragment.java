@@ -82,17 +82,18 @@ public class MakeEventFragment extends Fragment implements View.OnClickListener
     {
         if (view == btnCreateEvent)
         {
-            showProgress(true);
-            final FirebaseUser currentUser = mAuth.getCurrentUser();
-            Event newEvent = new Event(etEventName.getText().toString(), currentUser.getUid(),
-                    System.currentTimeMillis(), sPublic.isChecked(), sInvites.isChecked());
-
+            long timestamp = System.currentTimeMillis();
             //Generate a unique ID for the event
             Random rand = new Random();
 
             int n = rand.nextInt(10000) + 1;
             int n2 = rand.nextInt(10000) + 1;
-            final String UID = String.valueOf(newEvent.getTimestamp() + n + n2);
+            final String UID = String.valueOf(timestamp + n + n2);
+
+            showProgress(true);
+            final FirebaseUser currentUser = mAuth.getCurrentUser();
+            Event newEvent = new Event(etEventName.getText().toString(), currentUser.getUid(),
+                    timestamp, sPublic.isChecked(), sInvites.isChecked(), UID);
 
             FirebaseDatabase.getInstance()
                     .getReference()

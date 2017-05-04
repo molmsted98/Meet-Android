@@ -82,7 +82,7 @@ public class EventListFragment extends Fragment {
     {
         faActivity.getSupportFragmentManager()
                 .beginTransaction()
-                .add(R.id.content_container, EventFragment.newInstance(), "event")
+                .add(R.id.content_container, EventFragment.newInstance(events.get(position)), "event")
                 .addToBackStack("event")
                 .commit();
     }

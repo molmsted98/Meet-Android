@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -28,6 +29,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.tsuruta.meet.R;
 import com.tsuruta.meet.activities.MainActivity;
 import com.tsuruta.meet.objects.Chat;
+import com.tsuruta.meet.objects.Event;
 
 import static com.google.android.gms.internal.zzt.TAG;
 
@@ -43,10 +45,13 @@ public class EventFragment extends Fragment implements View.OnClickListener
     ImageView ivSendMessage;
     EditText etMessage;
     private FirebaseAuth mAuth;
+    Event event;
 
-    public static EventFragment newInstance()
+    public static EventFragment newInstance(Event event)
     {
-        return new EventFragment();
+        EventFragment ef = new EventFragment();
+        ef.event = event;
+        return ef;
     }
 
     @Override
@@ -67,6 +72,14 @@ public class EventFragment extends Fragment implements View.OnClickListener
         etMessage = (EditText) llLayout.findViewById(R.id.messageArea);
         ivSendMessage.setOnClickListener(this);
 
+        //TODO: Update actionbar title with name of the event
+        String eventName = event.getTitle();
+
+        //TODO: Remove the plus button from the action bar
+
+        //TODO: Triple check that the user is logged in before allowing them to see the chat
+        //Also maybe check to see that they're in the event? Can't hurt to do some verification
+
         return llLayout;
     }
 
@@ -75,65 +88,38 @@ public class EventFragment extends Fragment implements View.OnClickListener
     {
         if(view == ivSendMessage)
         {
-            FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
-            mUser.getToken(true)
-                    .addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
-                        public void onComplete(@NonNull Task<GetTokenResult> task) {
-                            if (task.isSuccessful()) {
-                                String idToken = task.getResult().getToken();
+            String message = etMessage.getText().toString();
+            Chat newChat = new Chat("Sender Name", mAuth.getCurrentUser().getUid(), event.getUid(), message, System.currentTimeMillis());
+            sendMessageToFirebaseEvent(parent.getApplicationContext(), newChat);
 
-                                //Chat newChat = new Chat(mAuth.getCurrentUser().getUid(), System.currentTimeMillis());
-                                //sendMessageToFirebaseEvent(parent.getApplicationContext(), newChat, idToken);
-                            } else {
-                                // Handle error -> task.getException();
-                                Log.e(TAG, "onClick-SendMessage: Couldn't get user token.");
-                            }
-                        }
-                    });
+            //TODO: Collapse the keyboard
+
+            //TODO: Clear the editText
+
         }
     }
 
     public void sendMessageToFirebaseEvent(final Context context,
-                                          final Chat chat,
-                                          final String receiverFirebaseToken) {
-        final String room_type_1 = chat.senderUid + "_" + chat.receiverUid;
-        final String room_type_2 = chat.receiverUid + "_" + chat.senderUid;
+                                          final Chat chat) {
+        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
 
-        final DatabaseReference databaseReference = FirebaseDatabase.getInstance()
-                .getReference();
-
+        Log.e(TAG, "sendMessageToFirebaseEvent: success");
         databaseReference.child("chats")
-                .getRef()
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.hasChild(room_type_1)) {
-                            Log.e(TAG, "sendMessageToFirebaseEvent: " + room_type_1 + " exists");
-                            databaseReference.child("events")
-                                    .child(room_type_1)
-                                    .child(String.valueOf(chat.timestamp))
-                                    .setValue(chat);
-                        } else if (dataSnapshot.hasChild(room_type_2)) {
-                            Log.e(TAG, "sendMessageToFirebaseEvent: " + room_type_2 + " exists");
-                            databaseReference.child("events")
-                                    .child(room_type_2)
-                                    .child(String.valueOf(chat.timestamp))
-                                    .setValue(chat);
-                        } else {
-                            Log.e(TAG, "sendMessageToFirebaseEvent: success");
-                            databaseReference.child("events")
-                                    .child(room_type_1)
-                                    .child(String.valueOf(chat.timestamp))
-                                    .setValue(chat);
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        // Unable to send message.
-                        //Toast.makeText(getFragmentManager().getClass(), "Message not sent");
-                    }
-                });
+                .child(chat.getEventUid())
+                .child(String.valueOf(chat.timestamp))
+                .setValue(chat.toMap())
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    //Show cute lil' sent icon
+                    Toast.makeText(context, "Message Sent", Toast.LENGTH_SHORT).show();
+                } else {
+                    //Allow user to retry sending
+                    Toast.makeText(context, "Failed to send message", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
     }
 
 

@@ -17,17 +17,19 @@ public class Event
     private long timestamp;
     private boolean mPublic, mInvite;
     private ArrayList<Chat> eventChats = new ArrayList<>();
+    private String uid;
 
     public Event(){}
 
     public Event(String eventTitle, String eventCreator, long timestamp, boolean mPublic,
-                 boolean mInvite)
+                 boolean mInvite, String uid)
     {
         this.eventCreator = eventCreator;
         this.eventTitle = eventTitle;
         this.timestamp = timestamp;
         this.mPublic = mPublic;
         this.mInvite = mInvite;
+        this.uid = uid;
     }
 
     public String getTitle()
@@ -91,6 +93,16 @@ public class Event
         return eventCreatorName;
     }
 
+    public void setUid(String uid)
+    {
+        this.uid = uid;
+    }
+
+    public String getUid()
+    {
+        return uid;
+    }
+
     @Exclude
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
@@ -99,6 +111,7 @@ public class Event
         result.put("isPublic", mPublic);
         result.put("allowInvites", mInvite);
         result.put("timestamp", timestamp);
+        result.put("uid", uid);
 
         return result;
     }
