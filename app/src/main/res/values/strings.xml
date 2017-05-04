@@ -1,7 +1,8 @@
 <resources>
+    <!-- General Strings -->
     <string name="app_name">Meet^</string>
 
-    <!-- Strings related to login -->
+    <!-- Activity Login -->
     <string name="prompt_email">Phone Number</string>
     <string name="prompt_password">Password (optional)</string>
     <string name="action_sign_in">Sign in with Facebook</string>
@@ -10,7 +11,23 @@
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
-    <string name="permission_rationale">"Contacts permissions are needed for providing email
-        completions."
-    </string>
+
+    <!-- Activity Main -->
+
+    <!-- Fragment Event -->
+    <string name="event_chat_hint">Write a message&#8230;</string>
+
+    <!-- Fragment Event List -->
+    <string name="join_button">Join Event</string>
+
+    <!-- Fragment Make Event -->
+    <string name="make_event_hint">Event Name</string>
+    <string name="public_label">Make Event Public?</string>
+    <string name="invite_label">Allow Friends to Invite?</string>
+    <string name="create_event_label">Create Event</string>
+
+    <!-- Card Chat -->
+
+    <!-- Card Event -->
+
 </resources>

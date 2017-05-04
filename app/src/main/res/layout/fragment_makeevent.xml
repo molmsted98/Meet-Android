@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimary">
 
@@ -27,7 +28,7 @@
             android:layout_gravity="center"
             android:layout_height="wrap_content"
             android:textColor="@color/colorAccent"
-            android:hint="Event Name"
+            android:hint="@string/make_event_hint"
             android:maxLines="1" />
 
         <LinearLayout
@@ -40,9 +41,9 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Make Event Public?"
+                android:text="@string/public_label"
                 android:textColor="#ffffff"
-                android:textSize="20dp"/>
+                android:textSize="20sp"/>
             <Switch
                 android:paddingLeft="10dp"
                 android:layout_width="wrap_content"
@@ -62,9 +63,9 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Allow Friends to Invite?"
+                android:text="@string/invite_label"
                 android:textColor="#ffffff"
-                android:textSize="20dp"/>
+                android:textSize="20sp"/>
             <Switch
                 android:paddingLeft="10dp"
                 android:layout_width="wrap_content"
@@ -81,7 +82,7 @@
             android:id="@+id/btnCreateEvent"
             android:padding="8dp"
             android:textColor="@color/colorAccent"
-            android:text="Create Event"
+            android:text="@string/create_event_label"
             android:background="@drawable/btn_login"/>
 
     </LinearLayout>
