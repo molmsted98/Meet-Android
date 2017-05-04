@@ -9,27 +9,32 @@ import java.util.Map;
 public class User
 {
     public String uid;
-    public String phoneNum;
+    public String email;
     public String firebaseToken;
     private ArrayList<String> events = new ArrayList<>();
 
     public User(){}
 
-    public User(String uid, String phoneNum, String firebaseToken)
+    public User(String uid, String email, String firebaseToken)
     {
         this.uid = uid;
-        this.phoneNum = phoneNum;
+        this.email = email;
         this.firebaseToken = firebaseToken;
     }
 
     public void addEvent(String eventId)
     {
-        events.add(eventId);
+        this.events.add(eventId);
     }
 
-    public String getName()
+    public void setEvents(ArrayList<String> events)
     {
-        return phoneNum;
+        this.events = events;
+    }
+
+    public String getEmail()
+    {
+        return email;
     }
 
     @Exclude
@@ -37,8 +42,9 @@ public class User
     {
         HashMap<String, Object> result = new HashMap<>();
         result.put("uid", uid);
-        result.put("phoneNum", phoneNum);
+        result.put("email", email);
         result.put("events", events);
+        result.put("token", firebaseToken);
 
         return result;
     }

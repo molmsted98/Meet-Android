@@ -250,11 +250,12 @@ public class LoginActivity extends AppCompatActivity
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
         //Already signed in, go to chats
+        //TODO: Also verify that this user still exists in the database
         if(currentUser != null)
         {
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            getApplicationContext().startActivity(intent);
+            //getApplicationContext().startActivity(intent);
         }
     }
 
