@@ -10,16 +10,16 @@ public class User
 {
     public String uid;
     public String email;
-    public String firebaseToken;
     private ArrayList<String> events = new ArrayList<>();
+    private String token;
 
     public User(){}
 
-    public User(String uid, String email, String firebaseToken)
+    public User(String uid, String email, String token)
     {
         this.uid = uid;
         this.email = email;
-        this.firebaseToken = firebaseToken;
+        this.token = token;
     }
 
     public void addEvent(String eventId)
@@ -37,6 +37,21 @@ public class User
         return email;
     }
 
+    public String getUid()
+    {
+        return uid;
+    }
+
+    public String getToken()
+    {
+        return token;
+    }
+
+    public void setToken(String token)
+    {
+        this.token = token;
+    }
+
     @Exclude
     public Map<String, Object> toMap()
     {
@@ -44,7 +59,7 @@ public class User
         result.put("uid", uid);
         result.put("email", email);
         result.put("events", events);
-        result.put("token", firebaseToken);
+        result.put("token", token);
 
         return result;
     }

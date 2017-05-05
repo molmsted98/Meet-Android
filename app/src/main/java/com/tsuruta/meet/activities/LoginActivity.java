@@ -14,7 +14,6 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AutoCompleteTextView;
@@ -35,12 +34,10 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.GetTokenResult;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.tsuruta.meet.R;
 import com.tsuruta.meet.objects.User;
-
-import static com.google.android.gms.internal.zzt.TAG;
 
 public class LoginActivity extends AppCompatActivity
 {
@@ -106,6 +103,16 @@ public class LoginActivity extends AppCompatActivity
                 // ...
             }
         });
+
+        //TODO: Make sure Google Play Services is updated (For Push notifications)
+        //GoogleApiAvailability.makeGooglePlayServicesAvailable()
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //TODO: Make sure Google Play Services is updated (For Push notifications)
+        //GoogleApiAvailability.makeGooglePlayServicesAvailable()
     }
 
     @Override
@@ -148,47 +155,31 @@ public class LoginActivity extends AppCompatActivity
 
     private void addUserToDatabase(Context context, final FirebaseUser firebaseUser)
     {
-        FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
-        mUser.getToken(true)
-                .addOnCompleteListener(new OnCompleteListener<GetTokenResult>()
+        String userToken = FirebaseInstanceId.getInstance().getToken();
+        User user = new User(firebaseUser.getUid(),
+                firebaseUser.getEmail(), userToken);
+        FirebaseDatabase.getInstance()
+                .getReference()
+                .child(getString(R.string.db_users))
+                .child(firebaseUser.getUid())
+                .setValue(user.toMap())
+                .addOnCompleteListener(new OnCompleteListener<Void> ()
                 {
-                    public void onComplete(@NonNull Task<GetTokenResult> task)
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task)
                     {
                         if (task.isSuccessful())
                         {
-                            String idToken = task.getResult().getToken();
-                            User user = new User(firebaseUser.getUid(),
-                                    firebaseUser.getEmail(), idToken);
-                            FirebaseDatabase.getInstance()
-                                    .getReference()
-                                    .child(getString(R.string.db_users))
-                                    .child(firebaseUser.getUid())
-                                    .setValue(user.toMap())
-                                    .addOnCompleteListener(new OnCompleteListener<Void> ()
-                                    {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task)
-                                        {
-                                            if (task.isSuccessful())
-                                            {
-                                                // successfully added user
-                                                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                                intent.setFlags(intent.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY);
-                                                getApplicationContext().startActivity(intent);
-                                            }
-                                            else
-                                            {
-                                                // failed to add user
-                                                Toast.makeText(getApplicationContext(), "Unable to add user to database", Toast.LENGTH_LONG).show();
-                                            }
-                                        }
-                                    });
+                            // successfully added user
+                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            intent.setFlags(intent.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY);
+                            getApplicationContext().startActivity(intent);
                         }
                         else
                         {
-                            // Handle error -> task.getException();
-                            Log.e(TAG, "onClick-SendMessage: Couldn't get user token.");
+                            // failed to add user
+                            Toast.makeText(getApplicationContext(), "Unable to add user to database", Toast.LENGTH_LONG).show();
                         }
                     }
                 });

@@ -22,19 +22,25 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.tsuruta.meet.R;
 import com.tsuruta.meet.activities.MainActivity;
+import com.tsuruta.meet.firebase.NotificationBuilder;
 import com.tsuruta.meet.objects.Chat;
 import com.tsuruta.meet.objects.Event;
+import com.tsuruta.meet.objects.User;
 import com.tsuruta.meet.recycler.ChatRecyclerAdapter;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import static com.google.android.gms.internal.zzt.TAG;
 
@@ -52,6 +58,10 @@ public class EventFragment extends Fragment implements View.OnClickListener, Vie
     private RecyclerView.LayoutManager layoutManager;
     private ChatRecyclerAdapter adapter;
     boolean firstTime;
+    //Recursion stuff
+    ArrayList<String> receiverTokens = new ArrayList<>();
+    ArrayList<String> userUids = new ArrayList<>();
+    int index = 0;
 
     public static EventFragment newInstance(Event event)
     {
@@ -122,6 +132,7 @@ public class EventFragment extends Fragment implements View.OnClickListener, Vie
     public void sendMessageToFirebaseEvent(final Context context, final Chat chat)
     {
         final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+        final FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
 
         Log.e(TAG, "sendMessageToFirebaseEvent: success");
         databaseReference.child(getString(R.string.db_chats))
@@ -136,12 +147,100 @@ public class EventFragment extends Fragment implements View.OnClickListener, Vie
                         if (task.isSuccessful())
                         {
                             //TODO: Show cute lil' sent icon
+                            //Send out a push notification to eveyone in the event
+                            prepareNotification(event.getUid(), chat, mUser);
                         }
                         else
                         {
                             //TODO: Allow user to retry sending
                             Toast.makeText(context, "Failed to send message", Toast.LENGTH_LONG).show();
                         }
+                    }
+                });
+    }
+
+    private void prepareNotification(String eventUid, final Chat chat, final FirebaseUser mUser)
+    {
+        //Get an array of all of the members' FirebaseTokens
+        //Start by getting all of the uids for users in the event
+        FirebaseDatabase.getInstance()
+                .getReference()
+                .child(getString(R.string.db_members))
+                .child(eventUid)
+                .addListenerForSingleValueEvent(new ValueEventListener()
+                {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot)
+                    {
+                        Iterator<DataSnapshot> dataSnapshots = dataSnapshot.getChildren().iterator();
+                        while (dataSnapshots.hasNext())
+                        {
+                            String userUid = dataSnapshots.next().getKey();
+                            userUids.add(userUid);
+                        }
+                        getUsersTokens(chat, mUser);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError)
+                    {
+                        // Unable to retrieve events.
+                        Toast.makeText(faActivity.getApplicationContext(), "Unable to get user uids", Toast.LENGTH_LONG).show();
+                    }
+                });
+    }
+
+    private void sendPushNotificationToReceiver(String username, String message, String uid,
+                                                String firebaseToken, String eventName)
+    {
+        System.out.println("Sending push to: ");
+        for(int i = 0; i < receiverTokens.size(); i ++)
+        {
+            System.out.println(receiverTokens.get(i));
+        }
+        NotificationBuilder.initialize()
+                .title(eventName)
+                .message(message)
+                .username(username)
+                .uid(uid)
+                .firebaseToken(firebaseToken)
+                .receiverFirebaseTokens(receiverTokens)
+                .send();
+    }
+
+    private void getUsersTokens(final Chat chat, final FirebaseUser mUser)
+    {
+        FirebaseDatabase.getInstance()
+                .getReference()
+                .child(getString(R.string.db_users))
+                .addListenerForSingleValueEvent(new ValueEventListener()
+                {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot)
+                    {
+                        Iterator<DataSnapshot> dataSnapshots = dataSnapshot.getChildren().iterator();
+                        while (dataSnapshots.hasNext())
+                        {
+                            DataSnapshot dataSnapshotChild = dataSnapshots.next();
+                            User user = dataSnapshotChild.getValue(User.class);
+                            for(int i = 0; i < userUids.size(); i ++)
+                            {
+                                if(user.getUid().equals(userUids.get(i)))
+                                {
+                                    //TODO: Check to make sure this id isn't the logged in user
+                                    receiverTokens.add(user.getToken());
+                                }
+                            }
+                            sendPushNotificationToReceiver(mUser.getEmail(), chat.message, mUser.getUid(),
+                                    FirebaseInstanceId.getInstance().getToken(), event.getTitle());
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError)
+                    {
+                        // Unable to retrieve events.
+                        Toast.makeText(faActivity.getApplicationContext(), "Unable to retrieve user tokens", Toast.LENGTH_LONG).show();
                     }
                 });
     }
@@ -161,6 +260,7 @@ public class EventFragment extends Fragment implements View.OnClickListener, Vie
                                 .getReference()
                                 .child(getString(R.string.db_chats))
                                 .child(event.getUid())
+                                .orderByChild("timestamp")
                                 .addChildEventListener(new ChildEventListener()
                                 {
                                     @Override
