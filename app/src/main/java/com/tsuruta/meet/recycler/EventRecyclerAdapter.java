@@ -36,6 +36,11 @@ public class EventRecyclerAdapter extends RecyclerView.Adapter<EventRecyclerView
         parent.eventClicked(position);
     }
 
+    public void joinEvent(int position)
+    {
+        parent.joinEvent(position);
+    }
+
     @Override
     public int getItemCount()
     {

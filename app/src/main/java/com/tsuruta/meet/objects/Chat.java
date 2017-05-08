@@ -45,7 +45,6 @@ public class Chat {
 
         result.put("sender", sender);
         result.put("senderUid", senderUid);
-        result.put("eventUid", eventUid);
         result.put("message", message);
         result.put("timestamp", timestamp);
 

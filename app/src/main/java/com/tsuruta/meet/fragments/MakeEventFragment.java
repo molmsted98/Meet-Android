@@ -28,8 +28,6 @@ import com.tsuruta.meet.R;
 import com.tsuruta.meet.activities.MainActivity;
 import com.tsuruta.meet.objects.Event;
 
-import java.util.Random;
-
 public class MakeEventFragment extends Fragment implements View.OnClickListener
 {
     FragmentActivity faActivity;
@@ -75,23 +73,23 @@ public class MakeEventFragment extends Fragment implements View.OnClickListener
     {
         if (view == btnCreateEvent)
         {
-            long timestamp = System.currentTimeMillis();
-            //Generate a unique ID for the event
-            Random rand = new Random();
-
-            int n = rand.nextInt(10000) + 1;
-            int n2 = rand.nextInt(10000) + 1;
-            final String UID = String.valueOf(timestamp + n + n2);
-
             showProgress(true);
+
+            long timestamp = System.currentTimeMillis();
+
             final FirebaseUser currentUser = mAuth.getCurrentUser();
             Event newEvent = new Event(etEventName.getText().toString(), currentUser.getUid(),
-                    timestamp, sPublic.isChecked(), sInvites.isChecked(), UID);
+                    timestamp, sPublic.isChecked(), sInvites.isChecked());
+
+            final String newUid = FirebaseDatabase.getInstance()
+                    .getReference()
+                    .child(getString(R.string.db_events))
+                    .push().getKey();
 
             FirebaseDatabase.getInstance()
                     .getReference()
                     .child(getString(R.string.db_events))
-                    .child(UID)
+                    .child(newUid)
                     .setValue(newEvent.toMap())
                     .addOnCompleteListener(new OnCompleteListener<Void>()
                     {
@@ -101,7 +99,34 @@ public class MakeEventFragment extends Fragment implements View.OnClickListener
                             if (task.isSuccessful())
                             {
                                 // successfully added event, update member lists
-                                updateMembers(currentUser, UID);
+                                FirebaseDatabase.getInstance()
+                                        .getReference()
+                                        .child(getString(R.string.db_events))
+                                        .child(newUid)
+                                        .child(getString(R.string.db_members))
+                                        .child(currentUser.getUid())
+                                        .setValue(true)
+                                        .addOnCompleteListener(new OnCompleteListener<Void>()
+                                        {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task)
+                                            {
+                                                if (task.isSuccessful())
+                                                {
+                                                    // successfully added event, update member lists
+                                                    showProgress(false);
+                                                    faActivity.getSupportFragmentManager()
+                                                            .beginTransaction()
+                                                            .add(R.id.content_container, EventListFragment.newInstance(), "eventList")
+                                                            .commit();
+                                                }
+                                                else
+                                                {
+                                                    // failed to add event
+                                                    Toast.makeText(faActivity.getApplicationContext(), "Failed to create event", Toast.LENGTH_LONG).show();
+                                                }
+                                            }
+                                        });
                             }
                             else
                             {
@@ -124,56 +149,6 @@ public class MakeEventFragment extends Fragment implements View.OnClickListener
                 sInvites.setChecked(false);
             }
         }
-    }
-
-    public void updateMembers(final FirebaseUser currentUser, final String eventUid)
-    {
-        //Add the user to members table
-        FirebaseDatabase.getInstance()
-                .getReference()
-                .child(getString(R.string.db_members) + "/" + eventUid + "/" + currentUser.getUid())
-                .setValue(true)
-                .addOnCompleteListener(new OnCompleteListener<Void>()
-                {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task)
-                    {
-                        if (task.isSuccessful())
-                        {
-                            //Add this event to the user object
-                            FirebaseDatabase
-                                    .getInstance()
-                                    .getReference()
-                                    .child("/" + getString(R.string.db_users) + "/" + currentUser.getUid() + "/" + getString(R.string.db_events) + "/" + eventUid)
-                                    .setValue(true)
-                                    .addOnCompleteListener(new OnCompleteListener<Void>()
-                                    {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task)
-                                        {
-                                            if (task.isSuccessful())
-                                            {
-                                                showProgress(false);
-                                                faActivity.getSupportFragmentManager()
-                                                        .beginTransaction()
-                                                        .add(R.id.content_container, EventListFragment.newInstance(), "eventList")
-                                                        .commit();
-                                            }
-                                            else
-                                            {
-                                                // failed to add event
-                                                Toast.makeText(faActivity.getApplicationContext(), "Failed to add event to user", Toast.LENGTH_LONG).show();
-                                            }
-                                        }
-                                    });
-                        }
-                        else
-                        {
-                            // failed to add event
-                            Toast.makeText(faActivity.getApplicationContext(), "Failed to add user to event", Toast.LENGTH_LONG).show();
-                        }
-                    }
-                });
     }
 
     /**

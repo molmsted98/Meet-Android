@@ -1,9 +1,11 @@
 package com.tsuruta.meet.objects;
 
 import com.google.firebase.database.Exclude;
+import com.google.firebase.database.GenericTypeIndicator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class User
@@ -22,15 +24,11 @@ public class User
         this.token = token;
     }
 
+    /*
     public void addEvent(String eventId)
     {
         this.events.add(eventId);
-    }
-
-    public void setEvents(ArrayList<String> events)
-    {
-        this.events = events;
-    }
+    }*/
 
     public String getEmail()
     {
@@ -52,11 +50,15 @@ public class User
         this.token = token;
     }
 
+    public ArrayList<String> getEvents()
+    {
+        return events;
+    }
+
     @Exclude
     public Map<String, Object> toMap()
     {
         HashMap<String, Object> result = new HashMap<>();
-        result.put("uid", uid);
         result.put("email", email);
         result.put("events", events);
         result.put("token", token);

@@ -1,6 +1,7 @@
 package com.tsuruta.meet.fragments;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -13,6 +14,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -29,7 +33,10 @@ public class EventListFragment extends Fragment {
 
     FragmentActivity faActivity;
     LinearLayout llLayout;
+    ArrayList<Event> allEvents = new ArrayList<>();
+    ArrayList<String> userEvents = new ArrayList<>();
     ArrayList<Event> events = new ArrayList<>();
+    ArrayList<Event> publicEvents = new ArrayList<>();
     MainActivity parent;
     TextView tvNoEvents;
     private RecyclerView recyclerView;
@@ -64,7 +71,7 @@ public class EventListFragment extends Fragment {
     private void getEvents()
     {
         //Network call to get data and save it to events arraylist
-        getAllEventsFromFirebase();
+        getUsersEvents();
     }
 
     private void setupRecycler()
@@ -87,11 +94,44 @@ public class EventListFragment extends Fragment {
                 .commit();
     }
 
-    public void getAllEventsFromFirebase()
+    public void joinEvent(int position)
     {
+        final String currentUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         FirebaseDatabase.getInstance()
                 .getReference()
                 .child(getString(R.string.db_events))
+                .child(events.get(position).getUid())
+                .child(getString(R.string.db_members))
+                .child(currentUid)
+                .setValue(true)
+                .addOnCompleteListener(new OnCompleteListener<Void>()
+                {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task)
+                    {
+                        if (task.isSuccessful())
+                        {
+                            //Joined the event. Update the list now.
+                            events.clear();
+                            getUsersEvents();
+                        }
+                        else
+                        {
+                            // failed to add event
+                            Toast.makeText(faActivity.getApplicationContext(), "Failed to join event", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+    }
+
+    public void getUsersEvents()
+    {
+        final String currentUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        FirebaseDatabase.getInstance()
+                .getReference()
+                .child(getString(R.string.db_events))
+                .orderByChild(getString(R.string.db_members) + "/" + currentUid)
+                .equalTo(true)
                 .addListenerForSingleValueEvent(new ValueEventListener()
                 {
                     @Override
@@ -103,20 +143,64 @@ public class EventListFragment extends Fragment {
                         {
                             DataSnapshot dataSnapshotChild = dataSnapshots.next();
                             Event event = dataSnapshotChild.getValue(Event.class);
+                            event.setHasJoined(true);
+                            event.setUid(dataSnapshotChild.getKey());
                             events.add(event);
                         }
-                        if(events.size() > 0)
-                        {
-                            //getEventCreatorNames();
-                            setupRecycler();
-                        }
+                        getPublicEvents();
                     }
 
                     @Override
                     public void onCancelled(DatabaseError databaseError)
                     {
                         // Unable to retrieve events.
-                        Toast.makeText(faActivity.getApplicationContext(), "Unable to retrieve events", Toast.LENGTH_LONG).show();
+                        Toast.makeText(faActivity.getApplicationContext(), "Unable to retrieve user events", Toast.LENGTH_LONG).show();
+                    }
+                });
+    }
+
+    //TODO: Only show these events if mutual friends or close in proximity
+    public void getPublicEvents()
+    {
+        FirebaseDatabase.getInstance()
+                .getReference()
+                .child(getString(R.string.db_events))
+                .orderByChild("public")
+                .equalTo(true)
+                .addListenerForSingleValueEvent(new ValueEventListener()
+                {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot)
+                    {
+                        Iterator<DataSnapshot> dataSnapshots = dataSnapshot.getChildren()
+                                .iterator();
+                        while (dataSnapshots.hasNext())
+                        {
+                            DataSnapshot dataSnapshotChild = dataSnapshots.next();
+                            Event event = dataSnapshotChild.getValue(Event.class);
+                            event.setUid(dataSnapshotChild.getKey());
+                            event.setHasJoined(false);
+                            boolean flag = false;
+                            for(int i = 0; i < events.size(); i ++)
+                            {
+                                if(event.getUid().equals(events.get(i).getUid()))
+                                {
+                                    flag = true;
+                                }
+                            }
+                            if(!flag)
+                            {
+                                events.add(event);
+                            }
+                        }
+                        setupRecycler();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError)
+                    {
+                        // Unable to retrieve events.
+                        Toast.makeText(faActivity.getApplicationContext(), "Unable to retrieve all events", Toast.LENGTH_LONG).show();
                     }
                 });
     }

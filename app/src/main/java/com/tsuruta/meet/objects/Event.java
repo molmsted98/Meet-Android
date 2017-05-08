@@ -2,6 +2,7 @@ package com.tsuruta.meet.objects;
 
 import com.google.firebase.database.Exclude;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,20 +10,20 @@ public class Event
 {
     private String eventTitle, eventCreator, eventCreatorName;
     private long timestamp;
-    private boolean mPublic, mInvite;
+    private boolean mPublic, mInvite, mJoined;
+    private ArrayList<String> members;
     private String uid;
 
     public Event(){}
 
     public Event(String eventTitle, String eventCreator, long timestamp, boolean mPublic,
-                 boolean mInvite, String uid)
+                 boolean mInvite)
     {
         this.eventCreator = eventCreator;
         this.eventTitle = eventTitle;
         this.timestamp = timestamp;
         this.mPublic = mPublic;
         this.mInvite = mInvite;
-        this.uid = uid;
     }
 
     public String getTitle()
@@ -38,10 +39,15 @@ public class Event
     //Look to see if the current user is in the userlist
     public boolean getHasJoined()
     {
-        return true;
+        return mJoined;
     }
 
-    public boolean getIsPublic()
+    public void setHasJoined(boolean a)
+    {
+        this.mJoined = a;
+    }
+
+    public boolean getPublic()
     {
         return mPublic;
     }
@@ -66,12 +72,12 @@ public class Event
         this.eventTitle = title;
     }
 
-    public void setAllowInvites(boolean b)
+    public void setInvite(boolean b)
     {
         this.mInvite = b;
     }
 
-    public void setIsPublic(boolean b)
+    public void setPublic(boolean b)
     {
         this.mPublic = b;
     }
@@ -102,10 +108,9 @@ public class Event
         HashMap<String, Object> result = new HashMap<>();
         result.put("title", eventTitle);
         result.put("creator", eventCreator);
-        result.put("isPublic", mPublic);
-        result.put("allowInvites", mInvite);
+        result.put("public", mPublic);
+        result.put("invite", mInvite);
         result.put("timestamp", timestamp);
-        result.put("uid", uid);
 
         return result;
     }

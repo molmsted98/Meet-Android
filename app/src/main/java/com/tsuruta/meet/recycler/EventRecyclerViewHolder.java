@@ -35,7 +35,8 @@ public class EventRecyclerViewHolder extends RecyclerView.ViewHolder implements 
         }
         else if(v == btnJoin)
         {
-            System.out.println("Tried to join an event");
+            int position = getLayoutPosition();
+            parent.joinEvent(position);
         }
     }
 
