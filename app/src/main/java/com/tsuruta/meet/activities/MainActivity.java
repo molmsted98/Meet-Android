@@ -13,6 +13,8 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.tsuruta.meet.fragments.EventListFragment;
@@ -22,22 +24,48 @@ import com.tsuruta.meet.R;
 public class MainActivity extends AppCompatActivity
 {
     @Override
-    protected void onCreate(Bundle savedInstanceState)
+    protected void onCreate(final Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
 
-        if(savedInstanceState == null)
-        {
-            //TODO: Check to make sure the user is logged in before showing them the event list. Otherwise switch Activities.
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .add(R.id.content_container, EventListFragment.newInstance(), getString(R.string.fragment_eventlist_name))
-                    .addToBackStack(getString(R.string.fragment_eventlist_name))
-                    .commit();
-        }
+        //Look for a new token in case it's a new device
+        final String userToken = FirebaseInstanceId.getInstance().getToken();
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseDatabase.getInstance()
+                .getReference()
+                .child(getString(R.string.db_users))
+                .child(firebaseUser.getUid())
+                .child(getString(R.string.db_tokens))
+                .child(userToken)
+                .setValue(true)
+                .addOnCompleteListener(new OnCompleteListener<Void> ()
+                {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task)
+                    {
+                        if (task.isSuccessful())
+                        {
+                            // successfully added tokemn
+                            if(savedInstanceState == null)
+                            {
+                                //TODO: Check to make sure the user is logged in before showing them the event list. Otherwise switch Activities.
+                                getSupportFragmentManager()
+                                        .beginTransaction()
+                                        .add(R.id.content_container, EventListFragment.newInstance(), getString(R.string.fragment_eventlist_name))
+                                        .addToBackStack(getString(R.string.fragment_eventlist_name))
+                                        .commit();
+                            }
+                        }
+                        else
+                        {
+                            // failed to add token
+                            Toast.makeText(getApplicationContext(), "Unable to add token to database", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
     }
 
     @Override

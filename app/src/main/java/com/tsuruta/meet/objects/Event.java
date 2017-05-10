@@ -9,19 +9,18 @@ import java.util.Map;
 public class Event
 {
     private String eventTitle, eventCreator, eventCreatorName;
-    private long timestamp;
     private boolean mPublic, mInvite, mJoined;
     private ArrayList<String> members;
     private String uid;
+    private long timestamp;
 
     public Event(){}
 
-    public Event(String eventTitle, String eventCreator, long timestamp, boolean mPublic,
+    public Event(String eventTitle, String eventCreator, boolean mPublic,
                  boolean mInvite)
     {
         this.eventCreator = eventCreator;
         this.eventTitle = eventTitle;
-        this.timestamp = timestamp;
         this.mPublic = mPublic;
         this.mInvite = mInvite;
     }
@@ -67,6 +66,11 @@ public class Event
         this.eventCreator = creator;
     }
 
+    public void setTimestamp(long timestamp)
+    {
+        this.timestamp = timestamp;
+    }
+
     public void setTitle(String title)
     {
         this.eventTitle = title;
@@ -110,7 +114,6 @@ public class Event
         result.put("creator", eventCreator);
         result.put("public", mPublic);
         result.put("invite", mInvite);
-        result.put("timestamp", timestamp);
 
         return result;
     }

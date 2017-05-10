@@ -10,17 +10,15 @@ public class Chat {
     public String senderUid;
     public String eventUid;
     public String message;
-    public long timestamp;
 
     public Chat(){}
 
-    public Chat(String sender, String senderUid, String eventUid, String message, long timestamp)
+    public Chat(String sender, String senderUid, String eventUid, String message)
     {
         this.sender = sender;
         this.senderUid = senderUid;
         this.eventUid = eventUid;
         this.message = message;
-        this.timestamp = timestamp;
     }
 
     public String getEventUid()
@@ -46,7 +44,6 @@ public class Chat {
         result.put("sender", sender);
         result.put("senderUid", senderUid);
         result.put("message", message);
-        result.put("timestamp", timestamp);
 
         return result;
     }

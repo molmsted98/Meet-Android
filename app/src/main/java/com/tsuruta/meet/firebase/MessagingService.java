@@ -37,7 +37,7 @@ public class MessagingService extends FirebaseMessagingService {
 
     private static final String TAG = "FirebaseMsgService";
     private static final String KEY_TITLE = "title";
-    private static final String KEY_TEXT = "text";
+    private static final String KEY_TEXT = "body";
 
     /**
      * Called when message is received.
@@ -82,7 +82,7 @@ public class MessagingService extends FirebaseMessagingService {
 
         // Also if you intend on generating your own notifications as a result of a received FCM
         // message, here is where that should be initiated. See sendNotification method below.
-        sendNotification(remoteMessage.getData().get(KEY_TEXT), remoteMessage.getData().get(KEY_TITLE));
+        sendNotification(remoteMessage.getNotification().getBody(), remoteMessage.getNotification().getTitle());
     }
     // [END receive_message]
 

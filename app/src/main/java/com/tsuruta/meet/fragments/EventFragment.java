@@ -109,7 +109,7 @@ public class EventFragment extends Fragment implements View.OnClickListener, Vie
         {
             String message = etMessage.getText().toString();
             Chat newChat = new Chat(mAuth.getCurrentUser().getEmail(), mAuth.getCurrentUser().getUid(),
-                    event.getUid(), message, System.currentTimeMillis());
+                    event.getUid(), message);
             sendMessageToFirebaseEvent(parent.getApplicationContext(), newChat);
             etMessage.setText("");
         }

@@ -7,7 +7,7 @@
     <string name="db_events">events</string>
     <string name="db_members">members</string>
     <string name="db_users">users</string>
-    <string name="db_token">token</string>
+    <string name="db_tokens">tokens</string>
 
     <!-- Activity Login -->
     <string name="prompt_email">Phone Number</string>

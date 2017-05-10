@@ -28,6 +28,7 @@
             android:layout_gravity="center"
             android:layout_height="wrap_content"
             android:textColor="@color/colorAccent"
+            android:textColorHint="#ffffff"
             android:hint="@string/make_event_hint"
             android:maxLines="1" />
 

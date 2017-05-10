@@ -145,6 +145,7 @@ public class EventListFragment extends Fragment {
                             Event event = dataSnapshotChild.getValue(Event.class);
                             event.setHasJoined(true);
                             event.setUid(dataSnapshotChild.getKey());
+                            event.setTimestamp(Long.parseLong(dataSnapshotChild.child("timestamp").getValue().toString()));
                             events.add(event);
                         }
                         getPublicEvents();
@@ -180,6 +181,7 @@ public class EventListFragment extends Fragment {
                             Event event = dataSnapshotChild.getValue(Event.class);
                             event.setUid(dataSnapshotChild.getKey());
                             event.setHasJoined(false);
+                            event.setTimestamp(Long.parseLong(dataSnapshotChild.child("timestamp").getValue().toString()));
                             boolean flag = false;
                             for(int i = 0; i < events.size(); i ++)
                             {

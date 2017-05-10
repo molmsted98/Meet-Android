@@ -34,10 +34,16 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.tsuruta.meet.R;
+import com.tsuruta.meet.objects.Event;
 import com.tsuruta.meet.objects.User;
+
+import java.util.Iterator;
 
 public class LoginActivity extends AppCompatActivity
 {
@@ -155,9 +161,9 @@ public class LoginActivity extends AppCompatActivity
 
     private void addUserToDatabase(Context context, final FirebaseUser firebaseUser)
     {
-        String userToken = FirebaseInstanceId.getInstance().getToken();
+        final String userToken = FirebaseInstanceId.getInstance().getToken();
         User user = new User(firebaseUser.getUid(),
-                firebaseUser.getEmail(), userToken);
+                firebaseUser.getEmail());
         FirebaseDatabase.getInstance()
                 .getReference()
                 .child(getString(R.string.db_users))
@@ -170,6 +176,33 @@ public class LoginActivity extends AppCompatActivity
                     {
                         if (task.isSuccessful())
                         {
+                            FirebaseDatabase.getInstance()
+                                    .getReference()
+                                    .child(getString(R.string.db_users))
+                                    .child(firebaseUser.getUid())
+                                    .child(getString(R.string.db_tokens))
+                                    .child(userToken)
+                                    .setValue(true)
+                                    .addOnCompleteListener(new OnCompleteListener<Void> ()
+                                    {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task)
+                                        {
+                                            if (task.isSuccessful())
+                                            {
+                                                // successfully added user
+                                                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                                intent.setFlags(intent.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY);
+                                                getApplicationContext().startActivity(intent);
+                                            }
+                                            else
+                                            {
+                                                // failed to add user
+                                                Toast.makeText(getApplicationContext(), "Unable to add user to database", Toast.LENGTH_LONG).show();
+                                            }
+                                        }
+                                    });
                             // successfully added user
                             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -244,9 +277,31 @@ public class LoginActivity extends AppCompatActivity
         //TODO: Also verify that this user still exists in the database
         if(currentUser != null)
         {
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            getApplicationContext().startActivity(intent);
+            FirebaseDatabase.getInstance()
+                    .getReference()
+                    .child(getString(R.string.db_users))
+                    .orderByKey()
+                    .equalTo(currentUser.getUid())
+                    .addListenerForSingleValueEvent(new ValueEventListener()
+                    {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot)
+                        {
+                            if(dataSnapshot.getChildrenCount() != 0)
+                            {
+                                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                getApplicationContext().startActivity(intent);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError)
+                        {
+                            // Unable to retrieve events.
+                            Toast.makeText(getApplicationContext(), "Unable to retrieve users", Toast.LENGTH_LONG).show();
+                        }
+                    });
         }
     }
 
