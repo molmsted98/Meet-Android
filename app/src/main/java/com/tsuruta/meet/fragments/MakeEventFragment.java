@@ -75,6 +75,7 @@ public class MakeEventFragment extends Fragment implements View.OnClickListener
         {
             showProgress(true);
 
+            final boolean mPublic = sPublic.isChecked();
             long timestamp = System.currentTimeMillis();
 
             final FirebaseUser currentUser = mAuth.getCurrentUser();
@@ -115,10 +116,20 @@ public class MakeEventFragment extends Fragment implements View.OnClickListener
                                                 {
                                                     // successfully added event, update member lists
                                                     showProgress(false);
-                                                    faActivity.getSupportFragmentManager()
-                                                            .beginTransaction()
-                                                            .add(R.id.content_container, EventListFragment.newInstance(), "eventList")
-                                                            .commit();
+                                                    if(!mPublic)
+                                                    {
+                                                        faActivity.getSupportFragmentManager()
+                                                                .beginTransaction()
+                                                                .add(R.id.content_container, InviteFragment.newInstance(newUid), "invite")
+                                                                .commit();
+                                                    }
+                                                    else
+                                                    {
+                                                        faActivity.getSupportFragmentManager()
+                                                                .beginTransaction()
+                                                                .add(R.id.content_container, EventListFragment.newInstance(), "eventList")
+                                                                .commit();
+                                                    }
                                                 }
                                                 else
                                                 {
