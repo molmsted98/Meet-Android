@@ -109,11 +109,14 @@ public class EventFragment extends Fragment implements View.OnClickListener, Vie
     {
         if (view == ivSendMessage)
         {
-            String message = etMessage.getText().toString();
-            Chat newChat = new Chat(mAuth.getCurrentUser().getEmail(), mAuth.getCurrentUser().getUid(),
-                    event.getUid(), message);
-            sendMessageToFirebaseEvent(parent.getApplicationContext(), newChat);
-            etMessage.setText("");
+            if(!etMessage.getText().toString().equals(""))
+            {
+                String message = etMessage.getText().toString();
+                Chat newChat = new Chat(mAuth.getCurrentUser().getEmail(), mAuth.getCurrentUser().getUid(),
+                        event.getUid(), message);
+                sendMessageToFirebaseEvent(parent.getApplicationContext(), newChat);
+                etMessage.setText("");
+            }
         }
         else if(view == ivSettings)
         {
