@@ -29,14 +29,11 @@ import com.tsuruta.meet.objects.Event;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class EventListFragment extends Fragment {
-
+public class EventListFragment extends Fragment
+{
     FragmentActivity faActivity;
     LinearLayout llLayout;
-    ArrayList<Event> allEvents = new ArrayList<>();
-    ArrayList<String> userEvents = new ArrayList<>();
     ArrayList<Event> events = new ArrayList<>();
-    ArrayList<Event> publicEvents = new ArrayList<>();
     MainActivity parent;
     TextView tvNoEvents;
     private RecyclerView recyclerView;
@@ -52,7 +49,7 @@ public class EventListFragment extends Fragment {
     public void onStart()
     {
         super.onStart();
-        getEvents();
+        getInviteEvents();
     }
 
     @Nullable
@@ -66,12 +63,6 @@ public class EventListFragment extends Fragment {
         tvNoEvents = (TextView)llLayout.findViewById(R.id.tvNoEvents);
 
         return llLayout;
-    }
-
-    private void getEvents()
-    {
-        //Network call to get data and save it to events arraylist
-        getUsersEvents();
     }
 
     private void setupRecycler()
@@ -113,13 +104,121 @@ public class EventListFragment extends Fragment {
                         {
                             //Joined the event. Update the list now.
                             events.clear();
-                            getUsersEvents();
+                            getInviteEvents();
                         }
                         else
                         {
                             // failed to add event
                             Toast.makeText(faActivity.getApplicationContext(), "Failed to join event", Toast.LENGTH_LONG).show();
                         }
+                    }
+                });
+    }
+
+    public void acceptInvite(int position)
+    {
+        final String currentUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        FirebaseDatabase.getInstance()
+                .getReference()
+                .child(getString(R.string.db_events))
+                .child(events.get(position).getUid())
+                .child(getString(R.string.db_members))
+                .child(currentUid)
+                .setValue(true)
+                .addOnCompleteListener(new OnCompleteListener<Void>()
+                {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task)
+                    {
+                        if (task.isSuccessful())
+                        {
+                            //Joined the event. Update the list now.
+                            events.clear();
+                            getInviteEvents();
+                        }
+                        else
+                        {
+                            // failed to add event
+                            Toast.makeText(faActivity.getApplicationContext(), "Failed to accept invite", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+    }
+
+    public void denyInvite(int position)
+    {
+        final String currentUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        FirebaseDatabase.getInstance()
+                .getReference()
+                .child(getString(R.string.db_events))
+                .child(events.get(position).getUid())
+                .child(getString(R.string.db_members))
+                .child(currentUid)
+                .removeValue()
+                .addOnCompleteListener(new OnCompleteListener<Void>()
+                {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task)
+                    {
+                        if (task.isSuccessful())
+                        {
+                            //Joined the event. Update the list now.
+                            events.clear();
+                            getInviteEvents();
+                        }
+                        else
+                        {
+                            // failed to add event
+                            Toast.makeText(faActivity.getApplicationContext(), "Failed to deny invite", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+    }
+
+    public void getInviteEvents()
+    {
+        final String currentUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        FirebaseDatabase.getInstance()
+                .getReference()
+                .child(getString(R.string.db_events))
+                .orderByChild(getString(R.string.db_members) + "/" + currentUid)
+                .equalTo(false)
+                .addListenerForSingleValueEvent(new ValueEventListener()
+                {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot)
+                    {
+                        Iterator<DataSnapshot> dataSnapshots = dataSnapshot.getChildren()
+                                .iterator();
+                        while (dataSnapshots.hasNext())
+                        {
+                            DataSnapshot dataSnapshotChild = dataSnapshots.next();
+                            Event event = dataSnapshotChild.getValue(Event.class);
+                            event.setUid(dataSnapshotChild.getKey());
+                            event.setInvited(true);
+                            event.setHasJoined(false);
+                            event.setTimestamp(Long.parseLong(dataSnapshotChild.child("timestamp").getValue().toString()));
+                            boolean flag = false;
+                            for(int i = 0; i < events.size(); i ++)
+                            {
+                                if(event.getUid().equals(events.get(i).getUid()))
+                                {
+                                    flag = true;
+                                }
+                            }
+                            if(!flag)
+                            {
+                                events.add(event);
+                            }
+                        }
+                        getUsersEvents();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError)
+                    {
+                        // Unable to retrieve events.
+                        Toast.makeText(faActivity.getApplicationContext(), "Unable to retrieve invite events", Toast.LENGTH_LONG).show();
                     }
                 });
     }
@@ -202,7 +301,7 @@ public class EventListFragment extends Fragment {
                     public void onCancelled(DatabaseError databaseError)
                     {
                         // Unable to retrieve events.
-                        Toast.makeText(faActivity.getApplicationContext(), "Unable to retrieve all events", Toast.LENGTH_LONG).show();
+                        Toast.makeText(faActivity.getApplicationContext(), "Unable to retrieve public events", Toast.LENGTH_LONG).show();
                     }
                 });
     }

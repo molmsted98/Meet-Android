@@ -9,7 +9,7 @@ import java.util.Map;
 public class Event
 {
     private String eventTitle, eventCreator, eventCreatorName;
-    private boolean mPublic, mInvite, mJoined;
+    private boolean mPublic, mInvite, mJoined, invited;
     private ArrayList<String> members;
     private String uid;
     private long timestamp;
@@ -104,6 +104,16 @@ public class Event
     public String getUid()
     {
         return uid;
+    }
+
+    public void setInvited(boolean invited)
+    {
+        this.invited = invited;
+    }
+
+    public boolean getInvited()
+    {
+        return invited;
     }
 
     @Exclude

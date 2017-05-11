@@ -41,6 +41,16 @@ public class EventRecyclerAdapter extends RecyclerView.Adapter<EventRecyclerView
         parent.joinEvent(position);
     }
 
+    public void acceptInvite(int position)
+    {
+        parent.acceptInvite(position);
+    }
+
+    public void denyInvite(int position)
+    {
+        parent.denyInvite(position);
+    }
+
     @Override
     public int getItemCount()
     {
@@ -82,6 +92,12 @@ public class EventRecyclerAdapter extends RecyclerView.Adapter<EventRecyclerView
             viewHolder.setTvEventCreator(creator);
             viewHolder.setTvEventExpires(expires);
             viewHolder.setJoinVisibility(hasJoined);
+
+            if(events.get(position).getInvited())
+            {
+                //TODO: Pass into this method the user's name.
+                viewHolder.setInviter("asdf");
+            }
         }
     }
 

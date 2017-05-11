@@ -28,6 +28,8 @@
     <!-- Fragment Event List -->
     <string name="fragment_eventlist_name">eventList</string>
     <string name="join_button">Join Event</string>
+    <string name="accept_button">Accept</string>
+    <string name="deny_button">Deny</string>
     <string name="no_events">You have no events.</string>
 
     <!-- Fragment Make Event -->
