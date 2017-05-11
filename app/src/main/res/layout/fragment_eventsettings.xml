@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
+    android:clickable="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:id="@+id/llCreateEvent">
+
+        <EditText
+            android:id="@+id/etEventName"
+            android:layout_width="287dp"
+            android:layout_marginTop="20dp"
+            android:layout_gravity="center"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorAccent"
+            android:textColorHint="#ffffff"
+            android:hint="@string/make_event_hint"
+            android:maxLines="1" />
+
+        <EditText
+            android:id="@+id/etEventHashtag"
+            android:layout_width="287dp"
+            android:layout_gravity="center"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorAccent"
+            android:textColorHint="#ffffff"
+            android:hint="Event Hashtag"
+            android:maxLines="1" />
+
+        <EditText
+            android:id="@+id/etEventLocation"
+            android:layout_width="287dp"
+            android:layout_gravity="center"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorAccent"
+            android:textColorHint="#ffffff"
+            android:hint="Event Location"
+            android:maxLines="1" />
+
+        <LinearLayout
+            android:layout_width="287dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:id="@+id/llPublic">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/public_label"
+                android:textColor="#ffffff"
+                android:textSize="20sp"/>
+            <Switch
+                android:paddingLeft="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/sPublic"
+                android:checked="true"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="287dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:id="@+id/llInvites">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/invite_label"
+                android:textColor="#ffffff"
+                android:textSize="20sp"/>
+            <Switch
+                android:paddingLeft="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/sInvites"
+                android:checked="true"/>
+        </LinearLayout>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:id="@+id/btnSettingsInvite"
+            android:padding="8dp"
+            android:textColor="@color/colorAccent"
+            android:text="Invite Friends"
+            android:background="@drawable/btn_login"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:id="@+id/btnLeaveEvent"
+            android:padding="8dp"
+            android:textColor="@color/colorAccent"
+            android:text="Leave Event"
+            android:background="@drawable/btn_login"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:id="@+id/btnSaveChanges"
+            android:padding="8dp"
+            android:textColor="@color/colorAccent"
+            android:text="Save Changes"
+            android:background="@drawable/btn_login"/>
+    </LinearLayout>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:id="@+id/btnDeleteEvent"
+        android:padding="8dp"
+        android:textColor="@color/colorAccent"
+        android:text="Delete Event"
+        android:background="#CE391A"
+        android:layout_alignParentBottom="true"/>
+</RelativeLayout>

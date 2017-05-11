@@ -46,7 +46,7 @@ public class EventFragment extends Fragment implements View.OnClickListener, Vie
     FragmentActivity faActivity;
     LinearLayout llLayout;
     MainActivity parent;
-    ImageView ivSendMessage;
+    ImageView ivSendMessage, ivSettings;
     EditText etMessage;
     private FirebaseAuth mAuth;
     Event event;
@@ -83,9 +83,11 @@ public class EventFragment extends Fragment implements View.OnClickListener, Vie
         parent = (MainActivity) getActivity();
         llLayout = (LinearLayout) inflater.inflate(R.layout.fragment_event, container, false);
         ivSendMessage = (ImageView) llLayout.findViewById(R.id.sendButton);
+        ivSettings = (ImageView) llLayout.findViewById(R.id.btnSettings);
         etMessage = (EditText) llLayout.findViewById(R.id.messageArea);
         etMessage.setOnFocusChangeListener(this);
         ivSendMessage.setOnClickListener(this);
+        ivSettings.setOnClickListener(this);
         recyclerView = (RecyclerView) llLayout.findViewById(R.id.chatRecycler);
         recyclerView.setOnClickListener(this);
 
@@ -112,6 +114,14 @@ public class EventFragment extends Fragment implements View.OnClickListener, Vie
                     event.getUid(), message);
             sendMessageToFirebaseEvent(parent.getApplicationContext(), newChat);
             etMessage.setText("");
+        }
+        else if(view == ivSettings)
+        {
+            faActivity.getSupportFragmentManager()
+                    .beginTransaction()
+                    .add(R.id.content_container, EventSettingsFragment.newInstance(event), "eventSettings")
+                    .addToBackStack("eventSettings")
+                    .commit();
         }
     }
 

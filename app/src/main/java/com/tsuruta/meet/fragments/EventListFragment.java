@@ -46,9 +46,10 @@ public class EventListFragment extends Fragment
     }
 
     @Override
-    public void onStart()
+    public void onResume()
     {
-        super.onStart();
+        super.onResume();
+        events.clear();
         getInviteEvents();
     }
 
