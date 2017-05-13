@@ -1,8 +1,8 @@
 package com.tsuruta.meet.fragments;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -14,17 +14,25 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.tsuruta.meet.R;
 import com.tsuruta.meet.activities.MainActivity;
 import com.tsuruta.meet.objects.User;
 import com.tsuruta.meet.recycler.UserRecyclerAdapter;
 
+import java.io.IOException;
 import java.util.ArrayList;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.HttpUrl;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 
 public class InviteFragment extends Fragment implements View.OnClickListener
@@ -40,6 +48,7 @@ public class InviteFragment extends Fragment implements View.OnClickListener
     String eventUid;
     private RecyclerView.LayoutManager layoutManager;
     private UserRecyclerAdapter adapter;
+    private Handler mHandler;
 
     public static InviteFragment newInstance(String uid)
     {
@@ -80,17 +89,57 @@ public class InviteFragment extends Fragment implements View.OnClickListener
         ivUserSelect = (ImageView) llLayout.findViewById(R.id.ivUserSelect);
         btnAddUsers = (Button) llLayout.findViewById(R.id.btnInviteUsers);
         btnAddUsers.setOnClickListener(this);
+        mHandler = new Handler(Looper.getMainLooper());
 
         //TODO: Update actionbar title with name of the event
 
         //TODO: Remove the plus button from the action bar
 
-        //TODO: Get the list of users right here
-        //Make sure that they're not already in the event
-        users.add(new User("44Kq73aF9ONK2nuoarASgXZ9h9h2", "molmsted98@gmail.com"));
-        users.add(new User("IVXKlLGQY8V9cah9AwnLqD2PQ9h2", "zachorr139@gmail.com"));
+        OkHttpClient client = new OkHttpClient();
+        HttpUrl.Builder urlBuilder = HttpUrl.parse("https://us-central1-meet-c7395.cloudfunctions.net/inviteList").newBuilder();
+        urlBuilder.addQueryParameter("userUid", FirebaseAuth.getInstance().getCurrentUser().getUid());
+        urlBuilder.addQueryParameter("eventUid", eventUid);
+        String url = urlBuilder.build().toString();
+        Request request = new Request.Builder().url(url).build();
 
-        setupRecycler();
+        client.newCall(request).enqueue(new Callback()
+        {
+            @Override
+            public void onFailure(Call call, IOException e)
+            {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Call call, final Response response) throws IOException
+            {
+                if (!response.isSuccessful())
+                {
+                    throw new IOException("Unexpected code " + response);
+                }
+                else
+                {
+                    mHandler.post(new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            try
+                            {
+                                String jsonResponse = response.body().string();
+                                Gson gson = new Gson();
+                                users = gson.fromJson(jsonResponse, new TypeToken<ArrayList<User>>(){}.getType());
+                                setupRecycler();
+                            }
+                            catch (IOException ex)
+                            {
+                                System.out.println("IO Exception " + ex);
+                            }
+                        }
+                    });
+                }
+            }
+        });
 
         return llLayout;
     }
