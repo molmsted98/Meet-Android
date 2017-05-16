@@ -1,6 +1,7 @@
 <resources>
     <!-- General Strings -->
     <string name="app_name">Meet^</string>
+    <string name="USERS_FILENAME">user_file</string>
 
     <!-- Database Strings -->
     <string name="db_chats">chats</string>

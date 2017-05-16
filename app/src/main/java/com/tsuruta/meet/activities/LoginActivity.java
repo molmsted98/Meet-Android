@@ -163,7 +163,7 @@ public class LoginActivity extends AppCompatActivity
     {
         final String userToken = FirebaseInstanceId.getInstance().getToken();
         User user = new User(firebaseUser.getUid(),
-                firebaseUser.getEmail());
+                firebaseUser.getEmail(), firebaseUser.getPhotoUrl().toString(), firebaseUser.getDisplayName());
         FirebaseDatabase.getInstance()
                 .getReference()
                 .child(getString(R.string.db_users))

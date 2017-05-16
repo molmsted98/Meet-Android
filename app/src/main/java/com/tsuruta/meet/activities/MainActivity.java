@@ -23,6 +23,7 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.tsuruta.meet.fragments.EventListFragment;
 import com.tsuruta.meet.fragments.MakeEventFragment;
 import com.tsuruta.meet.R;
+import com.tsuruta.meet.objects.User;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -64,7 +65,7 @@ public class MainActivity extends AppCompatActivity
 
         //Look for a new token in case it's a new device
         final String userToken = FirebaseInstanceId.getInstance().getToken();
-        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         FirebaseDatabase.getInstance()
                 .getReference()
                 .child(getString(R.string.db_users))
@@ -79,16 +80,63 @@ public class MainActivity extends AppCompatActivity
                     {
                         if (task.isSuccessful())
                         {
-                            // successfully added tokemn
-                            if(savedInstanceState == null)
-                            {
-                                //TODO: Check to make sure the user is logged in before showing them the event list. Otherwise switch Activities.
-                                getSupportFragmentManager()
-                                        .beginTransaction()
-                                        .add(R.id.content_container, EventListFragment.newInstance(), getString(R.string.fragment_eventlist_name))
-                                        .addToBackStack(getString(R.string.fragment_eventlist_name))
-                                        .commit();
-                            }
+                            //Update photourl and name
+                            final String url = firebaseUser.getPhotoUrl().toString();
+                            final String name = firebaseUser.getDisplayName();
+                            FirebaseDatabase.getInstance()
+                                    .getReference()
+                                    .child(getString(R.string.db_users))
+                                    .child(firebaseUser.getUid())
+                                    .child("avatar")
+                                    .setValue(url)
+                                    .addOnCompleteListener(new OnCompleteListener<Void> ()
+                                    {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task)
+                                        {
+                                            if (task.isSuccessful())
+                                            {
+                                                //Update photourl and name
+                                                FirebaseDatabase.getInstance()
+                                                        .getReference()
+                                                        .child(getString(R.string.db_users))
+                                                        .child(firebaseUser.getUid())
+                                                        .child("name")
+                                                        .setValue(name)
+                                                        .addOnCompleteListener(new OnCompleteListener<Void> ()
+                                                        {
+                                                            @Override
+                                                            public void onComplete(@NonNull Task<Void> task)
+                                                            {
+                                                                if (task.isSuccessful())
+                                                                {
+                                                                    //Update photourl and name
+
+                                                                    // successfully added tokemn
+                                                                    if(savedInstanceState == null)
+                                                                    {
+                                                                        getSupportFragmentManager()
+                                                                                .beginTransaction()
+                                                                                .add(R.id.content_container, EventListFragment.newInstance(), getString(R.string.fragment_eventlist_name))
+                                                                                .addToBackStack(getString(R.string.fragment_eventlist_name))
+                                                                                .commit();
+                                                                    }
+                                                                }
+                                                                else
+                                                                {
+                                                                    // failed to add token
+                                                                    Toast.makeText(getApplicationContext(), "Unable to add token to database", Toast.LENGTH_LONG).show();
+                                                                }
+                                                            }
+                                                        });
+                                            }
+                                            else
+                                            {
+                                                // failed to add token
+                                                Toast.makeText(getApplicationContext(), "Unable to add token to database", Toast.LENGTH_LONG).show();
+                                            }
+                                        }
+                                    });
                         }
                         else
                         {

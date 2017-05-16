@@ -2,6 +2,7 @@ package com.tsuruta.meet.fragments;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -19,6 +20,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.toolbox.ImageRequest;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -37,6 +41,11 @@ import com.tsuruta.meet.objects.Event;
 import com.tsuruta.meet.objects.User;
 import com.tsuruta.meet.recycler.ChatRecyclerAdapter;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -56,10 +65,6 @@ public class EventFragment extends Fragment implements View.OnClickListener, Vie
     private RecyclerView.LayoutManager layoutManager;
     private ChatRecyclerAdapter adapter;
     boolean firstTime;
-    //Recursion stuff
-    ArrayList<String> receiverTokens = new ArrayList<>();
-    ArrayList<String> userUids = new ArrayList<>();
-    int index = 0;
 
     public static EventFragment newInstance(Event event)
     {
@@ -114,8 +119,7 @@ public class EventFragment extends Fragment implements View.OnClickListener, Vie
             if(!etMessage.getText().toString().equals(""))
             {
                 String message = etMessage.getText().toString();
-                Chat newChat = new Chat(mAuth.getCurrentUser().getEmail(), mAuth.getCurrentUser().getUid(),
-                        event.getUid(), message);
+                Chat newChat = new Chat(mAuth.getCurrentUser().getUid(), event.getUid(), message);
                 sendMessageToFirebaseEvent(parent.getApplicationContext(), newChat);
                 etMessage.setText("");
             }

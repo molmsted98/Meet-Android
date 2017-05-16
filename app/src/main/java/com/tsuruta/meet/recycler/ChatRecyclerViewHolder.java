@@ -9,14 +9,17 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.tsuruta.meet.R;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ChatRecyclerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
     ChatRecyclerAdapter parent;
     TextView tvMessage, tvSenderName;
     LinearLayout llChatRow, llNameAndMessage;
-    ImageView ivLeft, ivRight;
+    CircleImageView ivLeft, ivRight;
 
     public ChatRecyclerViewHolder(ChatRecyclerAdapter parent, View itemView)
     {
@@ -26,8 +29,8 @@ public class ChatRecyclerViewHolder extends RecyclerView.ViewHolder implements V
         tvSenderName = (TextView) itemView.findViewById(R.id.tvSenderName);
         llChatRow = (LinearLayout) itemView.findViewById(R.id.llChatRow);
         llNameAndMessage = (LinearLayout) itemView.findViewById(R.id.llNameAndMessage);
-        ivLeft = (ImageView) itemView.findViewById(R.id.ivProfileLeft);
-        ivRight = (ImageView) itemView.findViewById(R.id.ivProfileRight);
+        ivLeft = (CircleImageView) itemView.findViewById(R.id.ivProfileLeft);
+        ivRight = (CircleImageView) itemView.findViewById(R.id.ivProfileRight);
         tvMessage.setOnClickListener(this);
     }
 
@@ -48,8 +51,9 @@ public class ChatRecyclerViewHolder extends RecyclerView.ViewHolder implements V
         tvSenderName.setText(senderName);
     }
 
-    public void setImage(String side)
+    public void setImage(String side, String url)
     {
+        ImageView iv = ivLeft;
         if(side.equals("left"))
         {
             ivRight.setVisibility(View.GONE);
@@ -57,9 +61,19 @@ public class ChatRecyclerViewHolder extends RecyclerView.ViewHolder implements V
         }
         else if(side.equals("right"))
         {
+            iv = ivRight;
             ivLeft.setVisibility(View.GONE);
             ivRight.setVisibility(View.VISIBLE);
         }
+
+        Glide
+                .with(parent.getParent())
+                .load(url)
+                .centerCrop()
+                .placeholder(R.drawable.com_facebook_button_like_background)
+                .crossFade()
+                .dontAnimate()
+                .into(iv);
     }
 
     public void setMessage(String message)

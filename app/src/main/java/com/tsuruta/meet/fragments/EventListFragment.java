@@ -21,11 +21,16 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.tsuruta.meet.objects.User;
 import com.tsuruta.meet.recycler.EventRecyclerAdapter;
 import com.tsuruta.meet.R;
 import com.tsuruta.meet.activities.MainActivity;
 import com.tsuruta.meet.objects.Event;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -34,6 +39,7 @@ public class EventListFragment extends Fragment
     FragmentActivity faActivity;
     LinearLayout llLayout;
     ArrayList<Event> events = new ArrayList<>();
+    ArrayList<ArrayList<User>> users = new ArrayList<>();
     MainActivity parent;
     TextView tvNoEvents;
     private RecyclerView recyclerView;
@@ -62,6 +68,7 @@ public class EventListFragment extends Fragment
         llLayout = (LinearLayout)inflater.inflate(R.layout.fragment_eventlist, container, false);
         recyclerView = (RecyclerView)llLayout.findViewById(R.id.eventRecycler);
         tvNoEvents = (TextView)llLayout.findViewById(R.id.tvNoEvents);
+        getUsers();
 
         return llLayout;
     }
@@ -305,6 +312,62 @@ public class EventListFragment extends Fragment
                         Toast.makeText(faActivity.getApplicationContext(), "Unable to retrieve public events", Toast.LENGTH_LONG).show();
                     }
                 });
+    }
+
+    private void getUsers()
+    {
+        try
+        {
+            File f = new File(parent.getString(R.string.USERS_FILENAME));
+            f.delete();
+            final FileOutputStream fos = parent.openFileOutput(parent.getString(R.string.USERS_FILENAME), parent.getApplicationContext().MODE_PRIVATE);
+
+            //TODO: Only run this query for users in your events
+            FirebaseDatabase.getInstance()
+                    .getReference()
+                    .child(getString(R.string.db_users))
+                    .addListenerForSingleValueEvent(new ValueEventListener()
+                    {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot)
+                        {
+                            Iterator<DataSnapshot> dataSnapshots = dataSnapshot.getChildren().iterator();
+                            while (dataSnapshots.hasNext())
+                            {
+                                DataSnapshot dataSnapshotChild = dataSnapshots.next();
+                                User user = dataSnapshotChild.getValue(User.class);
+                                String toWrite = dataSnapshotChild.getKey() + "\n" + user.getName() + "\n" + user.getAvatar() + "\n" + "\n";
+                                try
+                                {
+                                    fos.write(toWrite.getBytes());
+                                }
+                                catch(IOException ex)
+                                {
+                                    System.out.println("ERROR " + ex);
+                                }
+                            }
+                            try
+                            {
+                                fos.close();
+                            }
+                            catch (IOException ex)
+                            {
+                                System.out.println("Error " + ex);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError)
+                        {
+                            // Unable to retrieve events.
+                            Toast.makeText(faActivity.getApplicationContext(), "Unable to retrieve users", Toast.LENGTH_LONG).show();
+                        }
+                    });
+        }
+        catch (FileNotFoundException ex)
+        {
+            System.out.println("ERROR " + ex);
+        }
     }
 
     /*
