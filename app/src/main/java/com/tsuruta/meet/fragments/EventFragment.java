@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthProvider;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -93,6 +94,7 @@ public class EventFragment extends Fragment implements View.OnClickListener, Vie
 
         //TODO: Update actionbar title with name of the event
         String eventName = event.getTitle();
+        parent.setActionBarTitle(eventName);
 
         //TODO: Remove the plus button from the action bar
 
@@ -143,6 +145,8 @@ public class EventFragment extends Fragment implements View.OnClickListener, Vie
     public void sendMessageToFirebaseEvent(final Context context, final Chat chat)
     {
         final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+        final String newUid = databaseReference.child(getString(R.string.db_chats)).push().getKey();
+        chat.setUid(newUid);
 
         Log.e(TAG, "sendMessageToFirebaseEvent: success");
         databaseReference.child(getString(R.string.db_chats))
@@ -189,6 +193,7 @@ public class EventFragment extends Fragment implements View.OnClickListener, Vie
                                     public void onChildAdded(DataSnapshot dataSnapshot, String s)
                                     {
                                         Chat chat = dataSnapshot.getValue(Chat.class);
+                                        chat.setUid(dataSnapshot.getKey());
                                         chats.add(chat);
 
                                         if (firstTime)

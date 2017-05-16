@@ -66,18 +66,36 @@ public class ChatRecyclerAdapter extends RecyclerView.Adapter<ChatRecyclerViewHo
         if (chats.get(position) != null)
         {
             String message = chats.get(position).getMessage();
+            String sender = chats.get(position).getSenderName();
             viewHolder.setMessage(message);
 
-            //Move chat to the proper side based on sender
+            //Decide which side the chat should be on.
+            String side = "left";
             FirebaseAuth mAuth = FirebaseAuth.getInstance();
             String currentUid = mAuth.getCurrentUser().getUid();
             if(chats.get(position).getSenderUid().equals(currentUid))
             {
-                viewHolder.setSide("right");
+                side = "right";
             }
-            else
+
+            //Move chat to the proper side based on sender
+            viewHolder.setSide(side);
+
+            //Only show the profile image and sender image if it's the first message in their chain.
+            if(position != 0)
             {
-                viewHolder.setSide("left");
+                if(!chats.get(position - 1).getSenderUid().equals(chats.get(position).getSenderUid()))
+                {
+                    viewHolder.setSender(sender);
+                    viewHolder.setImage(side);
+                    viewHolder.addMargin();
+                }
+            }
+            //Makes sure that the very first chat will set name and image
+            if (chats.get(position).getUid().equals(chats.get(0).getUid()))
+            {
+                viewHolder.setSender(sender);
+                viewHolder.setImage(side);
             }
         }
     }

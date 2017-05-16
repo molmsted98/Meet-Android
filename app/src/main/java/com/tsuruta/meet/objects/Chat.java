@@ -10,8 +10,18 @@ public class Chat {
     public String senderUid;
     public String eventUid;
     public String message;
+    private String uid;
 
     public Chat(){}
+
+    public Chat(String sender, String senderUid, String eventUid, String message, String uid)
+    {
+        this.sender = sender;
+        this.senderUid = senderUid;
+        this.eventUid = eventUid;
+        this.message = message;
+        this.uid = uid;
+    }
 
     public Chat(String sender, String senderUid, String eventUid, String message)
     {
@@ -34,6 +44,21 @@ public class Chat {
     public String getSenderUid()
     {
         return senderUid;
+    }
+
+    public String getSenderName()
+    {
+        return sender;
+    }
+
+    public String getUid()
+    {
+        return uid;
+    }
+
+    public void setUid(String uid)
+    {
+        this.uid = uid;
     }
 
     @Exclude

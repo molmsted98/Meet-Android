@@ -3,12 +3,15 @@ package com.tsuruta.meet.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -30,6 +33,34 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
+
+        //Listen to whenever the fragment is changed, so the title/icon is set accordingly
+        getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener()
+        {
+            public void onBackStackChanged()
+            {
+                FragmentManager manager = getSupportFragmentManager();
+
+                if (manager != null)
+                {
+                    if(manager.getBackStackEntryCount() >= 1){
+                        String topOnStack = manager.getBackStackEntryAt(manager.getBackStackEntryCount()-1).getName();
+                        Log.i("TOP ON BACK STACK",topOnStack);
+                        if(topOnStack.equals(getString(R.string.fragment_eventlist_name)))
+                        {
+                            setActionBarTitle(getString(R.string.app_name));
+                        }
+                    }
+
+                    /*
+                    Fragment someFragment = (Fragment)getSupportFragmentManager().findFragmentById(R.id.fragmentItem);
+
+                    if (someFragment == null) {
+                        // this fragment was removed from back stack
+                    }*/
+                }
+            }
+        });
 
         //Look for a new token in case it's a new device
         final String userToken = FirebaseInstanceId.getInstance().getToken();
@@ -113,5 +144,12 @@ public class MainActivity extends AppCompatActivity
         {
             getSupportFragmentManager().popBackStack();
         }
+    }
+
+    public void setActionBarTitle(String name)
+    {
+        Toolbar tb = (Toolbar)findViewById(R.id.my_toolbar);
+        TextView tTitle = (TextView)tb.findViewById(R.id.toolbar_title);
+        tTitle.setText(name);
     }
 }
