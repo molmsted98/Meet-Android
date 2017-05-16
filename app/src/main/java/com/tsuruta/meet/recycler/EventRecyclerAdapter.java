@@ -37,7 +37,10 @@ public class EventRecyclerAdapter extends RecyclerView.Adapter<EventRecyclerView
 
     public void eventClicked(int position)
     {
-        parent.eventClicked(position);
+        if(events.get(position).getHasJoined())
+        {
+            parent.eventClicked(position);
+        }
     }
 
     public void joinEvent(int position)
