@@ -27,10 +27,13 @@ import com.tsuruta.meet.R;
 import com.tsuruta.meet.activities.MainActivity;
 import com.tsuruta.meet.objects.Event;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -39,7 +42,8 @@ public class EventListFragment extends Fragment
     FragmentActivity faActivity;
     LinearLayout llLayout;
     ArrayList<Event> events = new ArrayList<>();
-    ArrayList<ArrayList<User>> users = new ArrayList<>();
+    ArrayList<ArrayList<String>> urlList = new ArrayList<>();
+    ArrayList<ArrayList<String>> memberUids = new ArrayList<>();
     MainActivity parent;
     TextView tvNoEvents;
     private RecyclerView recyclerView;
@@ -68,7 +72,7 @@ public class EventListFragment extends Fragment
         llLayout = (LinearLayout)inflater.inflate(R.layout.fragment_eventlist, container, false);
         recyclerView = (RecyclerView)llLayout.findViewById(R.id.eventRecycler);
         tvNoEvents = (TextView)llLayout.findViewById(R.id.tvNoEvents);
-        getUsers();
+        cacheUserData();
 
         return llLayout;
     }
@@ -80,7 +84,7 @@ public class EventListFragment extends Fragment
         recyclerView.setHasFixedSize(false);
         layoutManager = new LinearLayoutManager(faActivity);
         recyclerView.setLayoutManager(layoutManager);
-        adapter = new EventRecyclerAdapter(this, events);
+        adapter = new EventRecyclerAdapter(this, events, urlList);
         recyclerView.setAdapter(adapter);
     }
 
@@ -207,6 +211,8 @@ public class EventListFragment extends Fragment
                             event.setHasJoined(false);
                             event.setTimestamp(Long.parseLong(dataSnapshotChild.child("timestamp").getValue().toString()));
                             boolean flag = false;
+                            event.setTheMembers(getEventMembers(dataSnapshotChild));
+
                             for(int i = 0; i < events.size(); i ++)
                             {
                                 if(event.getUid().equals(events.get(i).getUid()))
@@ -253,6 +259,7 @@ public class EventListFragment extends Fragment
                             event.setHasJoined(true);
                             event.setUid(dataSnapshotChild.getKey());
                             event.setTimestamp(Long.parseLong(dataSnapshotChild.child("timestamp").getValue().toString()));
+                            event.setTheMembers(getEventMembers(dataSnapshotChild));
                             events.add(event);
                         }
                         getPublicEvents();
@@ -289,6 +296,7 @@ public class EventListFragment extends Fragment
                             event.setUid(dataSnapshotChild.getKey());
                             event.setHasJoined(false);
                             event.setTimestamp(Long.parseLong(dataSnapshotChild.child("timestamp").getValue().toString()));
+                            event.setTheMembers(getEventMembers(dataSnapshotChild));
                             boolean flag = false;
                             for(int i = 0; i < events.size(); i ++)
                             {
@@ -302,7 +310,7 @@ public class EventListFragment extends Fragment
                                 events.add(event);
                             }
                         }
-                        setupRecycler();
+                        prepEventUserData();
                     }
 
                     @Override
@@ -314,7 +322,25 @@ public class EventListFragment extends Fragment
                 });
     }
 
-    private void getUsers()
+    public void prepEventUserData()
+    {
+        //Get event creators names
+        for(int i = 0; i < events.size(); i ++)
+        {
+            String[] creatorData = getSavedUserData(events.get(i).getCreator());
+            events.get(i).setCreatorName(creatorData[0]);
+            //Get event members imageUrls
+            urlList.add(new ArrayList<String>());
+            for(int j = 0; j < events.get(i).getTheMembers().size(); j++)
+            {
+                String[] memberData = getSavedUserData(events.get(i).getTheMembers().get(j));
+                urlList.get(i).add(memberData[1]);
+            }
+        }
+        setupRecycler();
+    }
+
+    private void cacheUserData()
     {
         try
         {
@@ -370,41 +396,61 @@ public class EventListFragment extends Fragment
         }
     }
 
-    /*
-    public void getEventCreatorNames()
+    private ArrayList<String> getEventMembers(DataSnapshot dataSnapshotChild)
     {
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-        Query queryRef = ref.orderByChild("uid").equalTo(creator);
-        System.out.println("Setting up recycler view " + position);
-        queryRef.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot snapshot, String previousChild) {
-                System.out.println("LOOK HERE: " + snapshot.getKey());
-                User user = snapshot.getValue(User.class);
-                creatorName = user.getName();
+        ArrayList<String> memberUids = new ArrayList<>();
+
+        //Save member uids
+        Iterator<DataSnapshot> eventProperties = dataSnapshotChild.getChildren().iterator();
+        DataSnapshot members = null;
+        while (eventProperties.hasNext())
+        {
+            DataSnapshot property = eventProperties.next();
+            if(property.getKey().equals(getString(R.string.db_members)))
+            {
+                members = property;
             }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
+        }
+        if(members != null)
+        {
+            Iterator<DataSnapshot> eventMembers = members.getChildren().iterator();
+            while(eventMembers.hasNext())
+            {
+                DataSnapshot potentialMember = eventMembers.next();
+                if((boolean)potentialMember.getValue())
+                {
+                    memberUids.add(potentialMember.getKey());
+                }
             }
+        }
+        return memberUids;
+    }
 
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
+    private String[] getSavedUserData(String uid)
+    {
+        String[] data = new String[2];
+        try
+        {
+            FileInputStream fis = parent.getApplicationContext().openFileInput(parent.getString(R.string.USERS_FILENAME));
+            InputStreamReader isr = new InputStreamReader(fis);
+            BufferedReader bufferedReader = new BufferedReader(isr);
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                if(line.equals(uid))
+                {
+                    data[0] = bufferedReader.readLine();
+                    data[1] = bufferedReader.readLine();
+                    break;
+                }
             }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-        setupRecycler();
-    }*/
+            return data;
+        }
+        catch (IOException ex)
+        {
+            System.out.println("Error " + ex);
+            data[0] = "Error";
+            data[1] = "https://www.gravatar.com/avatar/b00a4353a9ad54c5c914a028280c0f3f?s=32&d=identicon&r=PG&f=1";
+            return data;
+        }
+    }
 }

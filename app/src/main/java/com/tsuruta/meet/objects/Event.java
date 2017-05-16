@@ -10,8 +10,8 @@ public class Event
 {
     private String eventTitle, eventCreator, eventCreatorName;
     private boolean mPublic, mInvite, mJoined, invited;
-    private ArrayList<String> members;
     private String uid;
+    private ArrayList<String> members = new ArrayList<>();
     private long timestamp;
 
     public Event(){}
@@ -86,14 +86,24 @@ public class Event
         this.mPublic = b;
     }
 
-    public void setEventCreatorName(String name)
+    public void setCreatorName(String name)
     {
         this.eventCreatorName = name;
     }
 
-    public String getEventCreatorName()
+    public String getCreatorName()
     {
         return eventCreatorName;
+    }
+
+    public void setTheMembers(ArrayList<String> memberUids)
+    {
+        members = memberUids;
+    }
+
+    public ArrayList<String> getTheMembers()
+    {
+        return members;
     }
 
     public void setUid(String uid)

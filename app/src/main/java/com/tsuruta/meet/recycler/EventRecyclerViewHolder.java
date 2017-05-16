@@ -1,5 +1,6 @@
 package com.tsuruta.meet.recycler;
 
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
@@ -8,17 +9,22 @@ import android.widget.TextView;
 
 import com.tsuruta.meet.R;
 
+import java.util.ArrayList;
+
 public class EventRecyclerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
 {
     EventRecyclerAdapter parent;
     TextView tvEventTitle, tvEventCreator, tvEventExpires, tvEventInviter;
     Button btnJoin, btnAccept, btnDeny;
     LinearLayout llRespondInvite, llInviter;
+    private RecyclerView avatarRecycler;
+    private AvatarRecyclerAdapter avatarAdapter;
 
     public EventRecyclerViewHolder(EventRecyclerAdapter parent, View itemView)
     {
         super(itemView);
         this.parent = parent;
+
         llRespondInvite = (LinearLayout) itemView.findViewById(R.id.llRespondInvite);
         llInviter = (LinearLayout) itemView.findViewById(R.id.llInviter);
         tvEventTitle = (TextView) itemView.findViewById(R.id.event_title);
@@ -28,6 +34,10 @@ public class EventRecyclerViewHolder extends RecyclerView.ViewHolder implements 
         btnJoin = (Button) itemView.findViewById(R.id.btnJoin);
         btnAccept = (Button) itemView.findViewById(R.id.btnAccept);
         btnDeny = (Button) itemView.findViewById(R.id.btnDeny);
+        avatarRecycler = (RecyclerView) itemView.findViewById(R.id.avatarRecycler);
+        avatarRecycler.setLayoutManager(new LinearLayoutManager(parent.getParent().getContext(), LinearLayoutManager.HORIZONTAL, false));
+        avatarAdapter = new AvatarRecyclerAdapter(parent);
+        avatarRecycler.setAdapter(avatarAdapter);
         itemView.setOnClickListener(this);
         btnJoin.setOnClickListener(this);
         btnAccept.setOnClickListener(this);
@@ -79,13 +89,23 @@ public class EventRecyclerViewHolder extends RecyclerView.ViewHolder implements 
         }
     }
 
+    public void setAvatarUrls(ArrayList<String> urlList)
+    {
+        avatarAdapter.setData(urlList);
+    }
+
+    public void setRowIndex(int position)
+    {
+        avatarAdapter.setRowIndex(position);
+    }
+
     public void setInviter(String name)
     {
+        String inviter = "Invited by " + name;
         btnJoin.setVisibility(View.GONE);
         llInviter.setVisibility(View.VISIBLE);
         tvEventInviter.setVisibility(View.VISIBLE);
-        //TODO: Set the name on the TV to whatever was passed.
-        tvEventInviter.setText("INVITED BY $USER");
+        tvEventInviter.setText(inviter);
         llRespondInvite.setVisibility(View.VISIBLE);
     }
 }

@@ -12,22 +12,26 @@ import com.tsuruta.meet.objects.Event;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 public class EventRecyclerAdapter extends RecyclerView.Adapter<EventRecyclerViewHolder>
 {
     private ArrayList<Event> events;
+    private ArrayList<ArrayList<String>> urlList;
     private EventListFragment parent;
 
-    public EventRecyclerAdapter(EventListFragment parent, ArrayList<Event> events)
+    public EventRecyclerAdapter(EventListFragment parent, ArrayList<Event> events, ArrayList<ArrayList<String>> urlList)
     {
         this.events = events;
+        this.urlList = urlList;
         this.parent = parent;
     }
 
-    public void updateList(ArrayList<Event> events)
+    public void updateList(ArrayList<Event> events, ArrayList<ArrayList<String>> urlList)
     {
         this.events = events;
+        this.urlList = urlList;
         notifyDataSetChanged();
     }
 
@@ -80,7 +84,7 @@ public class EventRecyclerAdapter extends RecyclerView.Adapter<EventRecyclerView
             String name = events.get(position).getTitle();
 
             //Find creator's name based on userUid
-            String creator = events.get(position).getEventCreatorName();
+            String creator = events.get(position).getCreatorName();
 
             //Calculate expiration date based on the creation date
             long timestamp = events.get(position).getTimestamp();
@@ -92,20 +96,26 @@ public class EventRecyclerAdapter extends RecyclerView.Adapter<EventRecyclerView
             viewHolder.setTvEventCreator(creator);
             viewHolder.setTvEventExpires(expires);
             viewHolder.setJoinVisibility(hasJoined);
+            viewHolder.setAvatarUrls(urlList.get(position));
+            viewHolder.setRowIndex(position);
 
             if(events.get(position).getInvited())
             {
                 //TODO: Pass into this method the user's name.
-                viewHolder.setInviter("asdf");
+                viewHolder.setInviter("$user_name");
             }
         }
+    }
+
+    public EventListFragment getParent()
+    {
+        return parent;
     }
 
     private String getDate(long timestamp)
     {
         Calendar cal = Calendar.getInstance(Locale.ENGLISH);
         cal.setTimeInMillis(timestamp);
-        String date = DateFormat.format("MM-dd-yyyy", cal).toString();
-        return date;
+        return DateFormat.format("MM-dd-yyyy", cal).toString();
     }
 }

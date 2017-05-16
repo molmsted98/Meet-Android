@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity
                     {
                         if (task.isSuccessful())
                         {
-                            //Update photourl and name
+                            //Update photourl
                             final String url = firebaseUser.getPhotoUrl().toString();
                             final String name = firebaseUser.getDisplayName();
                             FirebaseDatabase.getInstance()
@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity
                                         {
                                             if (task.isSuccessful())
                                             {
-                                                //Update photourl and name
+                                                //Update name
                                                 FirebaseDatabase.getInstance()
                                                         .getReference()
                                                         .child(getString(R.string.db_users))
@@ -110,41 +110,47 @@ public class MainActivity extends AppCompatActivity
                                                             {
                                                                 if (task.isSuccessful())
                                                                 {
-                                                                    //Update photourl and name
-
-                                                                    // successfully added tokemn
-                                                                    if(savedInstanceState == null)
-                                                                    {
-                                                                        getSupportFragmentManager()
-                                                                                .beginTransaction()
-                                                                                .add(R.id.content_container, EventListFragment.newInstance(), getString(R.string.fragment_eventlist_name))
-                                                                                .addToBackStack(getString(R.string.fragment_eventlist_name))
-                                                                                .commit();
-                                                                    }
+                                                                    //All data updated
+                                                                    loadEventList(savedInstanceState);
                                                                 }
                                                                 else
                                                                 {
-                                                                    // failed to add token
-                                                                    Toast.makeText(getApplicationContext(), "Unable to add token to database", Toast.LENGTH_LONG).show();
+                                                                    //Failed to add name
+                                                                    Toast.makeText(getApplicationContext(), "Unable to add name to database", Toast.LENGTH_LONG).show();
+                                                                    loadEventList(savedInstanceState);
                                                                 }
                                                             }
                                                         });
                                             }
                                             else
                                             {
-                                                // failed to add token
-                                                Toast.makeText(getApplicationContext(), "Unable to add token to database", Toast.LENGTH_LONG).show();
+                                                //Failed to add photourl
+                                                Toast.makeText(getApplicationContext(), "Unable to add photourl to database", Toast.LENGTH_LONG).show();
+                                                loadEventList(savedInstanceState);
                                             }
                                         }
                                     });
                         }
                         else
                         {
-                            // failed to add token
+                            //Failed to add token
                             Toast.makeText(getApplicationContext(), "Unable to add token to database", Toast.LENGTH_LONG).show();
+                            loadEventList(savedInstanceState);
                         }
                     }
                 });
+    }
+
+    public void loadEventList(Bundle savedInstanceState)
+    {
+        if(savedInstanceState == null)
+        {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .add(R.id.content_container, EventListFragment.newInstance(), getString(R.string.fragment_eventlist_name))
+                    .addToBackStack(getString(R.string.fragment_eventlist_name))
+                    .commit();
+        }
     }
 
     @Override

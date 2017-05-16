@@ -3,7 +3,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/card"
+    android:background="@drawable/card_background"
     android:layout_margin="2dp"
     android:padding="16dp">
 
@@ -13,7 +13,8 @@
         android:orientation="horizontal"
         android:background="@color/colorPrimary"
         android:id="@+id/llInviter"
-        android:visibility="gone">
+        android:visibility="gone"
+        android:layout_marginBottom="4dp">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -25,32 +26,14 @@
             android:id="@+id/event_inviter"/>
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="wrap_content"
+        android:layout_height="86dp"
+        android:id="@+id/avatarRecycler"
+        android:scrollbars="none"
         android:orientation="horizontal"
-        android:padding="8dp">
-        <ImageView
-            android:layout_width="78dp"
-            android:layout_height="78dp"
-            android:src="@drawable/btn_login"
-            android:padding="4dp"/>
-        <ImageView
-            android:layout_width="78dp"
-            android:layout_height="78dp"
-            android:src="@drawable/btn_login"
-            android:padding="4dp"/>
-        <ImageView
-            android:layout_width="78dp"
-            android:layout_height="78dp"
-            android:src="@drawable/btn_login"
-            android:padding="4dp"/>
-        <ImageView
-            android:layout_width="78dp"
-            android:layout_height="78dp"
-            android:src="@drawable/btn_login"
-            android:padding="4dp"/>
-    </LinearLayout>
+        android:overScrollMode="never"
+        android:visibility="visible"/>
 
     <LinearLayout
         android:layout_width="match_parent"
