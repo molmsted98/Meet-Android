@@ -47,13 +47,7 @@ import java.util.Iterator;
 
 public class LoginActivity extends AppCompatActivity
 {
-    /**
-     * Keep track of the login task to ensure we can cancel it if requested.
-     */
-    private UserLoginTask mAuthTask = null;
-
     // UI references.
-    private AutoCompleteTextView mEmailView;
     private View mProgressView;
     private View mLoginFormView;
     private FirebaseAuth mAuth;
@@ -64,23 +58,11 @@ public class LoginActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        // Set up the login form.
-        mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
-
-        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
-        mEmailSignInButton.setOnClickListener(new OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                attemptLogin();
-            }
-        });
 
         mAuth = FirebaseAuth.getInstance();
 
-        mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+        mLoginFormView = findViewById(R.id.llLoginForm);
 
         // Initialize Facebook Login button
         mCallbackManager = CallbackManager.Factory.create();
@@ -127,6 +109,7 @@ public class LoginActivity extends AppCompatActivity
         super.onActivityResult(requestCode, resultCode, data);
 
         // Pass the activity result back to the Facebook SDK
+        showProgress(true);
         mCallbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
@@ -195,6 +178,7 @@ public class LoginActivity extends AppCompatActivity
                                                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                                 intent.setFlags(intent.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY);
                                                 getApplicationContext().startActivity(intent);
+                                                showProgress(false);
                                             }
                                             else
                                             {
@@ -218,55 +202,6 @@ public class LoginActivity extends AppCompatActivity
                 });
     }
 
-    /**
-     * Attempts to sign in or register the account specified by the login form.
-     * If there are form errors (invalid email, missing fields, etc.), the
-     * errors are presented and no actual login attempt is made.
-     */
-    private void attemptLogin()
-    {
-        if (mAuthTask != null)
-        {
-            return;
-        }
-
-        // Reset errors.
-        mEmailView.setError(null);
-
-        // Store values at the time of the login attempt.
-        String email = mEmailView.getText().toString();
-
-        boolean cancel = false;
-        View focusView = null;
-
-        // Check for a valid email address.
-        if (TextUtils.isEmpty(email))
-        {
-            mEmailView.setError(getString(R.string.error_field_required));
-            focusView = mEmailView;
-            cancel = true;
-        } else if (!isEmailValid(email)) {
-            mEmailView.setError(getString(R.string.error_invalid_email));
-            focusView = mEmailView;
-            cancel = true;
-        }
-
-        if (cancel)
-        {
-            // There was an error; don't attempt login and focus the first
-            // form field with an error.
-            focusView.requestFocus();
-        }
-        else
-        {
-            // Show a progress spinner, and kick off a background task to
-            // perform the user login attempt.
-            showProgress(true);
-            mAuthTask = new UserLoginTask(email, this);
-            mAuthTask.execute((Void) null);
-        }
-    }
-
     @Override
     public void onStart()
     {
@@ -274,9 +209,14 @@ public class LoginActivity extends AppCompatActivity
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
         //Already signed in, go to chats
-        //TODO: Also verify that this user still exists in the database
         if(currentUser != null)
         {
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            getApplicationContext().startActivity(intent);
+
+            //TODO: Reimplement checking DB for user, but not as slow.
+            /*
             FirebaseDatabase.getInstance()
                     .getReference()
                     .child(getString(R.string.db_users))
@@ -301,14 +241,8 @@ public class LoginActivity extends AppCompatActivity
                             // Unable to retrieve events.
                             Toast.makeText(getApplicationContext(), "Unable to retrieve users", Toast.LENGTH_LONG).show();
                         }
-                    });
+                    });*/
         }
-    }
-
-    private boolean isEmailValid(String email)
-    {
-        //TODO: Update the logic for valid phone numbers
-        return !(email.length() < 10);
     }
 
     /**
@@ -340,49 +274,6 @@ public class LoginActivity extends AppCompatActivity
                 mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
             }
         });
-    }
-
-    /**
-     * Represents an asynchronous login/registration task used to authenticate
-     * the user.
-     */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean>
-    {
-        private final String mEmail;
-        private Activity activity;
-
-        UserLoginTask(String email, Activity activity)
-        {
-            mEmail = email;
-            this.activity = activity;
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... params)
-        {
-            return true;
-        }
-
-        @Override
-        protected void onPostExecute(final Boolean success)
-        {
-            mAuthTask = null;
-            showProgress(false);
-
-            if (success)
-            {
-                Intent intent = new Intent(activity, MainActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                activity.getApplicationContext().startActivity(intent);
-            }
-        }
-
-        @Override
-        protected void onCancelled()
-        {
-            mAuthTask = null;
-            showProgress(false);
-        }
     }
 }
 
