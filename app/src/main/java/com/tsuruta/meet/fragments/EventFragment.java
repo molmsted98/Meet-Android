@@ -97,11 +97,9 @@ public class EventFragment extends Fragment implements View.OnClickListener, Vie
         recyclerView = (RecyclerView) llLayout.findViewById(R.id.chatRecycler);
         recyclerView.setOnClickListener(this);
 
-        //TODO: Update actionbar title with name of the event
         String eventName = event.getTitle();
         parent.setActionBarTitle(eventName);
-
-        //TODO: Remove the plus button from the action bar
+        parent.setAddVisibility(false);
 
         //TODO: Triple check that the user is logged in before allowing them to see the chat
         //Also check to see that they're a member of the event

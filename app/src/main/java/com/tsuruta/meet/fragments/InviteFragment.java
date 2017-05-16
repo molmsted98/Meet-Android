@@ -91,9 +91,7 @@ public class InviteFragment extends Fragment implements View.OnClickListener
         btnAddUsers.setOnClickListener(this);
         mHandler = new Handler(Looper.getMainLooper());
 
-        //TODO: Update actionbar title with name of the event
-
-        //TODO: Remove the plus button from the action bar
+        parent.setAddVisibility(false);
 
         OkHttpClient client = new OkHttpClient();
         HttpUrl.Builder urlBuilder = HttpUrl.parse("https://us-central1-meet-c7395.cloudfunctions.net/inviteList").newBuilder();

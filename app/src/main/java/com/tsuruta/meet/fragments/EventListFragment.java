@@ -72,6 +72,7 @@ public class EventListFragment extends Fragment
         llLayout = (LinearLayout)inflater.inflate(R.layout.fragment_eventlist, container, false);
         recyclerView = (RecyclerView)llLayout.findViewById(R.id.eventRecycler);
         tvNoEvents = (TextView)llLayout.findViewById(R.id.tvNoEvents);
+        parent.setAddVisibility(true);
         cacheUserData();
 
         return llLayout;

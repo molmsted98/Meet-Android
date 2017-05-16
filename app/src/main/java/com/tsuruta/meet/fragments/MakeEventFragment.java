@@ -64,6 +64,7 @@ public class MakeEventFragment extends Fragment implements View.OnClickListener
 
         btnCreateEvent.setOnClickListener(this);
         sPublic.setOnClickListener(this);
+        parent.setAddVisibility(false);
 
         return llLayout;
     }

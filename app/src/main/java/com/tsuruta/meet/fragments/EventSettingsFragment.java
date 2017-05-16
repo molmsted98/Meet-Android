@@ -63,6 +63,7 @@ public class EventSettingsFragment extends Fragment implements View.OnClickListe
         btnLeave.setOnClickListener(this);
         btnDelete.setOnClickListener(this);
         sPublic.setOnClickListener(this);
+        parent.setAddVisibility(false);
 
         //Determines what access the user should have for event settings
         owner = (FirebaseAuth.getInstance().getCurrentUser().getUid().equals(event.getCreator()));
