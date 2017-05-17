@@ -40,7 +40,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.tsuruta.meet.R;
-import com.tsuruta.meet.objects.Event;
 import com.tsuruta.meet.objects.User;
 
 import java.util.Iterator;

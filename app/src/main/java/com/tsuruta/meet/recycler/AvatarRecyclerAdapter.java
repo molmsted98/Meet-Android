@@ -17,9 +17,9 @@ public class AvatarRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 {
     private ArrayList<String> urlList = new ArrayList<>();
     private int mRowIndex = -1;
-    private EventRecyclerAdapter era;
+    private GroupRecyclerAdapter era;
 
-    public AvatarRecyclerAdapter(EventRecyclerAdapter era)
+    public AvatarRecyclerAdapter(GroupRecyclerAdapter era)
     {
         this.era = era;
     }
@@ -51,7 +51,7 @@ public class AvatarRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         @Override
         public void onClick(View view)
         {
-            era.eventClicked(mRowIndex);
+            era.groupClicked(mRowIndex);
         }
     }
 
@@ -80,7 +80,7 @@ public class AvatarRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     @Override
     public void onClick(View view)
     {
-        era.eventClicked(mRowIndex);
+        era.groupClicked(mRowIndex);
     }
 
     @Override

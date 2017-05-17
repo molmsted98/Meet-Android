@@ -7,7 +7,7 @@
     android:clickable="true">
 
     <ProgressBar
-        android:id="@+id/event_progress"
+        android:id="@+id/group_progress"
         style="?android:attr/progressBarStyleLargeInverse"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -20,19 +20,19 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:id="@+id/llEventList">
+        android:id="@+id/llGroupList">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="100dp"
-            android:text="@string/no_events"
+            android:text="@string/no_groups"
             android:textSize="25sp"
-            android:id="@+id/tvNoEvents"/>
+            android:id="@+id/tvNoGroups"/>
         <android.support.v7.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/eventRecycler"
+            android:id="@+id/groupRecycler"
             android:scrollbars="vertical"
             android:visibility="gone"/>
     </LinearLayout>

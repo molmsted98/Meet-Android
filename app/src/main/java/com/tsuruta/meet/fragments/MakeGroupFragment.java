@@ -26,22 +26,22 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 import com.tsuruta.meet.R;
 import com.tsuruta.meet.activities.MainActivity;
-import com.tsuruta.meet.objects.Event;
+import com.tsuruta.meet.objects.Group;
 
-public class MakeEventFragment extends Fragment implements View.OnClickListener
+public class MakeGroupFragment extends Fragment implements View.OnClickListener
 {
     FragmentActivity faActivity;
-    LinearLayout llLayout, llInvites, llCreateEvent;
+    LinearLayout llLayout, llInvites, llCreateGroup;
     MainActivity parent;
-    EditText etEventName;
-    Button btnCreateEvent;
+    EditText etGroupName;
+    Button btnCreateGroup;
     Switch sPublic, sInvites;
     ProgressBar pbCreate;
     private FirebaseAuth mAuth;
 
-    public static MakeEventFragment newInstance()
+    public static MakeGroupFragment newInstance()
     {
-        return new MakeEventFragment();
+        return new MakeGroupFragment();
     }
 
     @Nullable
@@ -50,19 +50,19 @@ public class MakeEventFragment extends Fragment implements View.OnClickListener
     {
         faActivity = super.getActivity();
         parent = (MainActivity)getActivity();
-        llLayout = (LinearLayout)inflater.inflate(R.layout.fragment_makeevent, container, false);
+        llLayout = (LinearLayout)inflater.inflate(R.layout.fragment_makegroup, container, false);
 
         mAuth = FirebaseAuth.getInstance();
 
-        etEventName = (EditText) llLayout.findViewById(R.id.etEventName);
-        btnCreateEvent = (Button) llLayout.findViewById(R.id.btnCreateEvent);
+        etGroupName = (EditText) llLayout.findViewById(R.id.etGroupName);
+        btnCreateGroup = (Button) llLayout.findViewById(R.id.btnCreateGroup);
         sPublic = (Switch) llLayout.findViewById(R.id.sPublic);
         sInvites = (Switch) llLayout.findViewById(R.id.sInvites);
         llInvites = (LinearLayout) llLayout.findViewById(R.id.llInvites);
-        llCreateEvent = (LinearLayout) llLayout.findViewById(R.id.llCreateEvent);
+        llCreateGroup = (LinearLayout) llLayout.findViewById(R.id.llCreateGroup);
         pbCreate = (ProgressBar) llLayout.findViewById(R.id.pbCreate);
 
-        btnCreateEvent.setOnClickListener(this);
+        btnCreateGroup.setOnClickListener(this);
         sPublic.setOnClickListener(this);
         parent.setAddVisibility(false);
 
@@ -72,7 +72,7 @@ public class MakeEventFragment extends Fragment implements View.OnClickListener
     @Override
     public void onClick(View view)
     {
-        if (view == btnCreateEvent)
+        if (view == btnCreateGroup)
         {
             showProgress(true);
 
@@ -80,19 +80,19 @@ public class MakeEventFragment extends Fragment implements View.OnClickListener
             long timestamp = System.currentTimeMillis();
 
             final FirebaseUser currentUser = mAuth.getCurrentUser();
-            Event newEvent = new Event(etEventName.getText().toString(), currentUser.getUid(),
+            Group newGroup = new Group(etGroupName.getText().toString(), currentUser.getUid(),
                     sPublic.isChecked(), sInvites.isChecked());
 
             final String newUid = FirebaseDatabase.getInstance()
                     .getReference()
-                    .child(getString(R.string.db_events))
+                    .child(getString(R.string.db_groups))
                     .push().getKey();
 
             FirebaseDatabase.getInstance()
                     .getReference()
-                    .child(getString(R.string.db_events))
+                    .child(getString(R.string.db_groups))
                     .child(newUid)
-                    .setValue(newEvent.toMap())
+                    .setValue(newGroup.toMap())
                     .addOnCompleteListener(new OnCompleteListener<Void>()
                     {
                         @Override
@@ -100,10 +100,10 @@ public class MakeEventFragment extends Fragment implements View.OnClickListener
                         {
                             if (task.isSuccessful())
                             {
-                                // successfully added event, update member lists
+                                // successfully added group, update member lists
                                 FirebaseDatabase.getInstance()
                                         .getReference()
-                                        .child(getString(R.string.db_events))
+                                        .child(getString(R.string.db_groups))
                                         .child(newUid)
                                         .child(getString(R.string.db_members))
                                         .child(currentUser.getUid())
@@ -115,7 +115,7 @@ public class MakeEventFragment extends Fragment implements View.OnClickListener
                                             {
                                                 if (task.isSuccessful())
                                                 {
-                                                    // successfully added event, update member lists
+                                                    // successfully added group, update member lists
                                                     showProgress(false);
                                                     if(!mPublic)
                                                     {
@@ -128,22 +128,22 @@ public class MakeEventFragment extends Fragment implements View.OnClickListener
                                                     {
                                                         faActivity.getSupportFragmentManager()
                                                                 .beginTransaction()
-                                                                .add(R.id.content_container, EventListFragment.newInstance(), "eventList")
+                                                                .add(R.id.content_container, GroupListFragment.newInstance(), "groupList")
                                                                 .commit();
                                                     }
                                                 }
                                                 else
                                                 {
-                                                    // failed to add event
-                                                    Toast.makeText(faActivity.getApplicationContext(), "Failed to create event", Toast.LENGTH_LONG).show();
+                                                    // failed to add group
+                                                    Toast.makeText(faActivity.getApplicationContext(), "Failed to create group", Toast.LENGTH_LONG).show();
                                                 }
                                             }
                                         });
                             }
                             else
                             {
-                                // failed to add event
-                                Toast.makeText(faActivity.getApplicationContext(), "Failed to create event", Toast.LENGTH_LONG).show();
+                                // failed to add group
+                                Toast.makeText(faActivity.getApplicationContext(), "Failed to create group", Toast.LENGTH_LONG).show();
                             }
                         }
                     });
@@ -171,14 +171,14 @@ public class MakeEventFragment extends Fragment implements View.OnClickListener
     {
         int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
-        llCreateEvent.setVisibility(show ? View.GONE : View.VISIBLE);
-        llCreateEvent.animate().setDuration(shortAnimTime).alpha(
+        llCreateGroup.setVisibility(show ? View.GONE : View.VISIBLE);
+        llCreateGroup.animate().setDuration(shortAnimTime).alpha(
                 show ? 0 : 1).setListener(new AnimatorListenerAdapter()
         {
             @Override
             public void onAnimationEnd(Animator animation)
             {
-                llCreateEvent.setVisibility(show ? View.GONE : View.VISIBLE);
+                llCreateGroup.setVisibility(show ? View.GONE : View.VISIBLE);
             }
         });
 

@@ -21,24 +21,24 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 import com.tsuruta.meet.R;
 import com.tsuruta.meet.activities.MainActivity;
-import com.tsuruta.meet.objects.Event;
+import com.tsuruta.meet.objects.Group;
 
-public class EventSettingsFragment extends Fragment implements View.OnClickListener
+public class GroupSettingsFragment extends Fragment implements View.OnClickListener
 {
     FragmentActivity faActivity;
     RelativeLayout llLayout;
     LinearLayout llPublic, llInvites;
     MainActivity parent;
-    Event event;
+    Group group;
     boolean mPublic, invite, owner;
     Button btnSave, btnInvite, btnLeave, btnDelete;
     Switch sPublic, sInvites;
-    EditText etEventName;
+    EditText etGroupName;
 
-    public static EventSettingsFragment newInstance(Event event)
+    public static GroupSettingsFragment newInstance(Group group)
     {
-        EventSettingsFragment ef = new EventSettingsFragment();
-        ef.event = event;
+        GroupSettingsFragment ef = new GroupSettingsFragment();
+        ef.group = group;
         return ef;
     }
 
@@ -48,16 +48,16 @@ public class EventSettingsFragment extends Fragment implements View.OnClickListe
     {
         faActivity = super.getActivity();
         parent = (MainActivity) getActivity();
-        llLayout = (RelativeLayout) inflater.inflate(R.layout.fragment_eventsettings, container, false);
+        llLayout = (RelativeLayout) inflater.inflate(R.layout.fragment_groupsettings, container, false);
         llPublic = (LinearLayout) llLayout.findViewById(R.id.llPublic);
         llInvites = (LinearLayout) llLayout.findViewById(R.id.llInvites);
         btnSave = (Button) llLayout.findViewById(R.id.btnSaveChanges);
         btnInvite = (Button) llLayout.findViewById(R.id.btnSettingsInvite);
-        btnLeave = (Button) llLayout.findViewById(R.id.btnLeaveEvent);
-        btnDelete = (Button) llLayout.findViewById(R.id.btnDeleteEvent);
+        btnLeave = (Button) llLayout.findViewById(R.id.btnLeaveGroup);
+        btnDelete = (Button) llLayout.findViewById(R.id.btnDeleteGroup);
         sPublic = (Switch) llLayout.findViewById(R.id.sPublic);
         sInvites = (Switch) llLayout.findViewById(R.id.sInvites);
-        etEventName = (EditText) llLayout.findViewById(R.id.etEventName);
+        etGroupName = (EditText) llLayout.findViewById(R.id.etGroupName);
         btnSave.setOnClickListener(this);
         btnInvite.setOnClickListener(this);
         btnLeave.setOnClickListener(this);
@@ -65,10 +65,10 @@ public class EventSettingsFragment extends Fragment implements View.OnClickListe
         sPublic.setOnClickListener(this);
         parent.setAddVisibility(false);
 
-        //Determines what access the user should have for event settings
-        owner = (FirebaseAuth.getInstance().getCurrentUser().getUid().equals(event.getCreator()));
-        mPublic = event.getPublic();
-        invite = event.getInvite();
+        //Determines what access the user should have for group settings
+        owner = (FirebaseAuth.getInstance().getCurrentUser().getUid().equals(group.getCreator()));
+        mPublic = group.getPublic();
+        invite = group.getInvite();
 
         setupSettings();
 
@@ -82,8 +82,8 @@ public class EventSettingsFragment extends Fragment implements View.OnClickListe
         {
             FirebaseDatabase.getInstance()
                     .getReference()
-                    .child(getString(R.string.db_events))
-                    .child(event.getUid())
+                    .child(getString(R.string.db_groups))
+                    .child(group.getUid())
                     .child("public")
                     .setValue(sPublic.isChecked())
                     .addOnCompleteListener(new OnCompleteListener<Void>()
@@ -95,8 +95,8 @@ public class EventSettingsFragment extends Fragment implements View.OnClickListe
                             {
                                 FirebaseDatabase.getInstance()
                                         .getReference()
-                                        .child(getString(R.string.db_events))
-                                        .child(event.getUid())
+                                        .child(getString(R.string.db_groups))
+                                        .child(group.getUid())
                                         .child("invite")
                                         .setValue(sInvites.isChecked())
                                         .addOnCompleteListener(new OnCompleteListener<Void>()
@@ -108,10 +108,10 @@ public class EventSettingsFragment extends Fragment implements View.OnClickListe
                                                 {
                                                     FirebaseDatabase.getInstance()
                                                             .getReference()
-                                                            .child(getString(R.string.db_events))
-                                                            .child(event.getUid())
+                                                            .child(getString(R.string.db_groups))
+                                                            .child(group.getUid())
                                                             .child("title")
-                                                            .setValue(etEventName.getText().toString())
+                                                            .setValue(etGroupName.getText().toString())
                                                             .addOnCompleteListener(new OnCompleteListener<Void>()
                                                             {
                                                                 @Override
@@ -123,24 +123,24 @@ public class EventSettingsFragment extends Fragment implements View.OnClickListe
                                                                     }
                                                                     else
                                                                     {
-                                                                        // failed to delete event
-                                                                        Toast.makeText(faActivity.getApplicationContext(), "Failed to update event", Toast.LENGTH_LONG).show();
+                                                                        // failed to delete group
+                                                                        Toast.makeText(faActivity.getApplicationContext(), "Failed to update group", Toast.LENGTH_LONG).show();
                                                                     }
                                                                 }
                                                             });
                                                 }
                                                 else
                                                 {
-                                                    // failed to delete event
-                                                    Toast.makeText(faActivity.getApplicationContext(), "Failed to update event", Toast.LENGTH_LONG).show();
+                                                    // failed to delete group
+                                                    Toast.makeText(faActivity.getApplicationContext(), "Failed to update group", Toast.LENGTH_LONG).show();
                                                 }
                                             }
                                         });
                             }
                             else
                             {
-                                // failed to delete event
-                                Toast.makeText(faActivity.getApplicationContext(), "Failed to update event", Toast.LENGTH_LONG).show();
+                                // failed to delete group
+                                Toast.makeText(faActivity.getApplicationContext(), "Failed to update group", Toast.LENGTH_LONG).show();
                             }
                         }
                     });
@@ -149,16 +149,16 @@ public class EventSettingsFragment extends Fragment implements View.OnClickListe
         {
             faActivity.getSupportFragmentManager()
                     .beginTransaction()
-                    .add(R.id.content_container, InviteFragment.newInstance(event.getUid()), "invite")
-                    .addToBackStack("eventSettings")
+                    .add(R.id.content_container, InviteFragment.newInstance(group.getUid()), "invite")
+                    .addToBackStack("groupSettings")
                     .commit();
         }
         else if(view == btnLeave)
         {
             FirebaseDatabase.getInstance()
                     .getReference()
-                    .child(getString(R.string.db_events))
-                    .child(event.getUid())
+                    .child(getString(R.string.db_groups))
+                    .child(group.getUid())
                     .child(getString(R.string.db_members))
                     .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                     .removeValue()
@@ -171,13 +171,13 @@ public class EventSettingsFragment extends Fragment implements View.OnClickListe
                             {
                                 faActivity.getSupportFragmentManager()
                                         .beginTransaction()
-                                        .add(R.id.content_container, EventListFragment.newInstance(), getString(R.string.fragment_eventlist_name))
+                                        .add(R.id.content_container, GroupListFragment.newInstance(), getString(R.string.fragment_grouplist_name))
                                         .commit();
                             }
                             else
                             {
-                                // failed to delete event
-                                Toast.makeText(faActivity.getApplicationContext(), "Failed to leave event", Toast.LENGTH_LONG).show();
+                                // failed to delete group
+                                Toast.makeText(faActivity.getApplicationContext(), "Failed to leave group", Toast.LENGTH_LONG).show();
                             }
                         }
                     });
@@ -187,8 +187,8 @@ public class EventSettingsFragment extends Fragment implements View.OnClickListe
             //TODO: Put in a prompt here asking if they're sure.
             FirebaseDatabase.getInstance()
                     .getReference()
-                    .child(getString(R.string.db_events))
-                    .child(event.getUid())
+                    .child(getString(R.string.db_groups))
+                    .child(group.getUid())
                     .removeValue()
                     .addOnCompleteListener(new OnCompleteListener<Void>()
                     {
@@ -199,13 +199,13 @@ public class EventSettingsFragment extends Fragment implements View.OnClickListe
                             {
                                 faActivity.getSupportFragmentManager()
                                         .beginTransaction()
-                                        .add(R.id.content_container, EventListFragment.newInstance(), getString(R.string.fragment_eventlist_name))
+                                        .add(R.id.content_container, GroupListFragment.newInstance(), getString(R.string.fragment_grouplist_name))
                                         .commit();
                             }
                             else
                             {
-                                // failed to delete event
-                                Toast.makeText(faActivity.getApplicationContext(), "Failed to delete event", Toast.LENGTH_LONG).show();
+                                // failed to delete group
+                                Toast.makeText(faActivity.getApplicationContext(), "Failed to delete group", Toast.LENGTH_LONG).show();
                             }
                         }
                     });
@@ -229,7 +229,7 @@ public class EventSettingsFragment extends Fragment implements View.OnClickListe
     {
         sPublic.setChecked(mPublic);
         sInvites.setChecked(invite);
-        etEventName.setText(event.getTitle());
+        etGroupName.setText(group.getTitle());
         if(owner)
         {
             btnLeave.setVisibility(View.GONE);

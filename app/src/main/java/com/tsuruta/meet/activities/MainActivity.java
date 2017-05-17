@@ -1,13 +1,9 @@
 package com.tsuruta.meet.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -20,10 +16,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;
-import com.tsuruta.meet.fragments.EventListFragment;
-import com.tsuruta.meet.fragments.MakeEventFragment;
+import com.tsuruta.meet.fragments.GroupListFragment;
 import com.tsuruta.meet.R;
-import com.tsuruta.meet.objects.User;
+import com.tsuruta.meet.fragments.MakeGroupFragment;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -83,13 +78,13 @@ public class MainActivity extends AppCompatActivity
                                                                 if (task.isSuccessful())
                                                                 {
                                                                     //All data updated
-                                                                    loadEventList(savedInstanceState);
+                                                                    loadGroupList(savedInstanceState);
                                                                 }
                                                                 else
                                                                 {
                                                                     //Failed to add name
                                                                     Toast.makeText(getApplicationContext(), "Unable to add name to database", Toast.LENGTH_LONG).show();
-                                                                    loadEventList(savedInstanceState);
+                                                                    loadGroupList(savedInstanceState);
                                                                 }
                                                             }
                                                         });
@@ -98,7 +93,7 @@ public class MainActivity extends AppCompatActivity
                                             {
                                                 //Failed to add photourl
                                                 Toast.makeText(getApplicationContext(), "Unable to add photourl to database", Toast.LENGTH_LONG).show();
-                                                loadEventList(savedInstanceState);
+                                                loadGroupList(savedInstanceState);
                                             }
                                         }
                                     });
@@ -107,20 +102,20 @@ public class MainActivity extends AppCompatActivity
                         {
                             //Failed to add token
                             Toast.makeText(getApplicationContext(), "Unable to add token to database", Toast.LENGTH_LONG).show();
-                            loadEventList(savedInstanceState);
+                            loadGroupList(savedInstanceState);
                         }
                     }
                 });
     }
 
-    public void loadEventList(Bundle savedInstanceState)
+    public void loadGroupList(Bundle savedInstanceState)
     {
         if(savedInstanceState == null)
         {
             getSupportFragmentManager()
                     .beginTransaction()
-                    .add(R.id.content_container, EventListFragment.newInstance(), getString(R.string.fragment_eventlist_name))
-                    .addToBackStack(getString(R.string.fragment_eventlist_name))
+                    .add(R.id.content_container, GroupListFragment.newInstance(), getString(R.string.fragment_grouplist_name))
+                    .addToBackStack(getString(R.string.fragment_grouplist_name))
                     .commit();
         }
     }
@@ -138,11 +133,11 @@ public class MainActivity extends AppCompatActivity
     {
         switch (item.getItemId())
         {
-            case R.id.action_newEvent:
+            case R.id.action_newGroup:
                 getSupportFragmentManager()
                         .beginTransaction()
-                        .add(R.id.content_container, MakeEventFragment.newInstance(), getString(R.string.fragment_makeevent_name))
-                        .addToBackStack(getString(R.string.fragment_makeevent_name))
+                        .add(R.id.content_container, MakeGroupFragment.newInstance(), getString(R.string.fragment_makegroup_name))
+                        .addToBackStack(getString(R.string.fragment_makegroup_name))
                         .commit();
                 return true;
 
@@ -159,13 +154,13 @@ public class MainActivity extends AppCompatActivity
         //Close the app only when back is pressed on the main screen.
         //TODO: This is a pretty trash solution to the problem, fix it please.
         //Problem: You shouldn't be able to switch from MainActivity back to LoginActivity, unless you click LogOut button.
-        if(getSupportFragmentManager().getBackStackEntryAt(getSupportFragmentManager().getBackStackEntryCount() - 1).getName().equals(getString(R.string.fragment_eventlist_name)))
+        if(getSupportFragmentManager().getBackStackEntryAt(getSupportFragmentManager().getBackStackEntryCount() - 1).getName().equals(getString(R.string.fragment_grouplist_name)))
         {
             this.finishAffinity();
         }
         else
         {
-            if(getSupportFragmentManager().getBackStackEntryAt(getSupportFragmentManager().getBackStackEntryCount() - 2).getName().equals(getString(R.string.fragment_eventlist_name)))
+            if(getSupportFragmentManager().getBackStackEntryAt(getSupportFragmentManager().getBackStackEntryCount() - 2).getName().equals(getString(R.string.fragment_grouplist_name)))
             {
                 setAddVisibility(true);
                 setActionBarTitle(getString(R.string.app_name));
@@ -185,7 +180,7 @@ public class MainActivity extends AppCompatActivity
     {
         Toolbar tb = (Toolbar)findViewById(R.id.my_toolbar);
         Menu menu = tb.getMenu();
-        MenuItem menuItemAdd = menu.findItem(R.id.action_newEvent);
+        MenuItem menuItemAdd = menu.findItem(R.id.action_newGroup);
         menuItemAdd.setVisible(b);
     }
 }

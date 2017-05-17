@@ -5,7 +5,7 @@
 
     <!-- Database Strings -->
     <string name="db_chats">chats</string>
-    <string name="db_events">events</string>
+    <string name="db_groups">groups</string>
     <string name="db_members">members</string>
     <string name="db_users">users</string>
     <string name="db_tokens">tokens</string>
@@ -22,26 +22,26 @@
 
     <!-- Activity Main -->
 
-    <!-- Fragment Event -->
-    <string name="fragment_event_name">event</string>
-    <string name="event_chat_hint">Write a message&#8230;</string>
+    <!-- Fragment Group -->
+    <string name="fragment_group_name">group</string>
+    <string name="group_chat_hint">Write a message&#8230;</string>
 
-    <!-- Fragment Event List -->
-    <string name="fragment_eventlist_name">eventList</string>
-    <string name="join_button">Join Event</string>
+    <!-- Fragment Group List -->
+    <string name="fragment_grouplist_name">groupList</string>
+    <string name="join_button">Join Group</string>
     <string name="accept_button">Accept</string>
     <string name="deny_button">Deny</string>
-    <string name="no_events">You have no events.</string>
+    <string name="no_groups">You have no groups.</string>
 
-    <!-- Fragment Make Event -->
-    <string name="fragment_makeevent_name">makeEvent</string>
-    <string name="make_event_hint">Event Name</string>
-    <string name="public_label">Make Event Public?</string>
+    <!-- Fragment Make Group -->
+    <string name="fragment_makegroup_name">makeGroup</string>
+    <string name="make_group_hint">Group Name</string>
+    <string name="public_label">Make Group Public?</string>
     <string name="invite_label">Allow Friends to Invite?</string>
-    <string name="create_event_label">Create Event</string>
+    <string name="create_group_label">Create Group</string>
 
     <!-- Card Chat -->
 
-    <!-- Card Event -->
+    <!-- Card Group -->
 
 </resources>

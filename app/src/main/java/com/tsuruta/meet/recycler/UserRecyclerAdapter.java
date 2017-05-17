@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tsuruta.meet.R;
-import com.tsuruta.meet.fragments.EventFragment;
 import com.tsuruta.meet.fragments.InviteFragment;
 import com.tsuruta.meet.objects.User;
 

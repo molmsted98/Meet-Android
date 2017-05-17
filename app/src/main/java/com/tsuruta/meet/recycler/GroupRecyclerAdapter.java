@@ -7,45 +7,44 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tsuruta.meet.R;
-import com.tsuruta.meet.fragments.EventListFragment;
-import com.tsuruta.meet.objects.Event;
+import com.tsuruta.meet.fragments.GroupListFragment;
+import com.tsuruta.meet.objects.Group;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Locale;
 
-public class EventRecyclerAdapter extends RecyclerView.Adapter<EventRecyclerViewHolder>
+public class GroupRecyclerAdapter extends RecyclerView.Adapter<GroupRecyclerViewHolder>
 {
-    private ArrayList<Event> events;
+    private ArrayList<Group> groups;
     private ArrayList<ArrayList<String>> urlList;
-    private EventListFragment parent;
+    private GroupListFragment parent;
 
-    public EventRecyclerAdapter(EventListFragment parent, ArrayList<Event> events, ArrayList<ArrayList<String>> urlList)
+    public GroupRecyclerAdapter(GroupListFragment parent, ArrayList<Group> groups, ArrayList<ArrayList<String>> urlList)
     {
-        this.events = events;
+        this.groups = groups;
         this.urlList = urlList;
         this.parent = parent;
     }
 
-    public void updateList(ArrayList<Event> events, ArrayList<ArrayList<String>> urlList)
+    public void updateList(ArrayList<Group> groups, ArrayList<ArrayList<String>> urlList)
     {
-        this.events = events;
+        this.groups = groups;
         this.urlList = urlList;
         notifyDataSetChanged();
     }
 
-    public void eventClicked(int position)
+    public void groupClicked(int position)
     {
-        if(events.get(position).getHasJoined())
+        if(groups.get(position).getHasJoined())
         {
-            parent.eventClicked(position);
+            parent.groupClicked(position);
         }
     }
 
-    public void joinEvent(int position)
+    public void joinGroup(int position)
     {
-        parent.joinEvent(position);
+        parent.joinGroup(position);
     }
 
     public void acceptInvite(int position)
@@ -61,48 +60,48 @@ public class EventRecyclerAdapter extends RecyclerView.Adapter<EventRecyclerView
     @Override
     public int getItemCount()
     {
-        if(events == null)
+        if(groups == null)
         {
             return 0;
         }
         else
         {
-            return events.size();
+            return groups.size();
         }
     }
 
     @Override
-    public EventRecyclerViewHolder onCreateViewHolder(ViewGroup viewGroup, int position)
+    public GroupRecyclerViewHolder onCreateViewHolder(ViewGroup viewGroup, int position)
     {
         LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
-        View itemView = inflater.inflate(R.layout.card_event, viewGroup, false);
-        return new EventRecyclerViewHolder(this, itemView);
+        View itemView = inflater.inflate(R.layout.card_group, viewGroup, false);
+        return new GroupRecyclerViewHolder(this, itemView);
     }
 
     @Override
-    public void onBindViewHolder(EventRecyclerViewHolder viewHolder, int position)
+    public void onBindViewHolder(GroupRecyclerViewHolder viewHolder, int position)
     {
-        if (events.get(position) != null)
+        if (groups.get(position) != null)
         {
-            String name = events.get(position).getTitle();
+            String name = groups.get(position).getTitle();
 
             //Find creator's name based on userUid
-            String creator = events.get(position).getCreatorName();
+            String creator = groups.get(position).getCreatorName();
 
             //Calculate expiration date based on the creation date
-            long timestamp = events.get(position).getTimestamp();
+            long timestamp = groups.get(position).getTimestamp();
             String expires = getDate(timestamp);
 
-            boolean hasJoined = events.get(position).getHasJoined();
+            boolean hasJoined = groups.get(position).getHasJoined();
 
-            viewHolder.setTvEventTitle(name);
-            viewHolder.setTvEventCreator(creator);
-            viewHolder.setTvEventExpires(expires);
+            viewHolder.setTvGroupTitle(name);
+            viewHolder.setTvGroupCreator(creator);
+            viewHolder.setTvGroupExpires(expires);
             viewHolder.setJoinVisibility(hasJoined);
             viewHolder.setAvatarUrls(urlList.get(position));
             viewHolder.setRowIndex(position);
 
-            if(events.get(position).getInvited())
+            if(groups.get(position).getInvited())
             {
                 //TODO: Pass into this method the user's name.
                 viewHolder.setInviter("$user_name");
@@ -110,7 +109,7 @@ public class EventRecyclerAdapter extends RecyclerView.Adapter<EventRecyclerView
         }
     }
 
-    public EventListFragment getParent()
+    public GroupListFragment getParent()
     {
         return parent;
     }

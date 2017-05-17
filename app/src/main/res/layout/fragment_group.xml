@@ -29,7 +29,7 @@
             android:layout_marginLeft="8dp"
             android:textColorHint="#CFD8DC"
             android:textColor="#000000"
-            android:hint="@string/event_chat_hint"
+            android:hint="@string/group_chat_hint"
             android:id="@+id/messageArea"
             android:maxHeight="80dp"
             />

@@ -7,9 +7,8 @@ import android.view.ViewGroup;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.tsuruta.meet.R;
-import com.tsuruta.meet.fragments.EventFragment;
+import com.tsuruta.meet.fragments.GroupFragment;
 import com.tsuruta.meet.objects.Chat;
-import com.tsuruta.meet.objects.User;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -20,9 +19,9 @@ import java.util.ArrayList;
 public class ChatRecyclerAdapter extends RecyclerView.Adapter<ChatRecyclerViewHolder>
 {
     private ArrayList<Chat> chats;
-    private EventFragment parent;
+    private GroupFragment parent;
 
-    public ChatRecyclerAdapter(EventFragment parent, ArrayList<Chat> chats)
+    public ChatRecyclerAdapter(GroupFragment parent, ArrayList<Chat> chats)
     {
         this.chats = chats;
         this.parent = parent;
@@ -52,7 +51,7 @@ public class ChatRecyclerAdapter extends RecyclerView.Adapter<ChatRecyclerViewHo
         }
     }
 
-    public EventFragment getParent()
+    public GroupFragment getParent()
     {
         return parent;
     }

@@ -45,7 +45,7 @@ public class InviteFragment extends Fragment implements View.OnClickListener
     Button btnAddUsers;
     ArrayList<User> users = new ArrayList<>();
     ArrayList<String> inviteUsers = new ArrayList<>();
-    String eventUid;
+    String groupUid;
     private RecyclerView.LayoutManager layoutManager;
     private UserRecyclerAdapter adapter;
     private Handler mHandler;
@@ -53,7 +53,7 @@ public class InviteFragment extends Fragment implements View.OnClickListener
     public static InviteFragment newInstance(String uid)
     {
         InviteFragment newIf = new InviteFragment();
-        newIf.eventUid = uid;
+        newIf.groupUid = uid;
         return newIf;
     }
 
@@ -96,7 +96,7 @@ public class InviteFragment extends Fragment implements View.OnClickListener
         OkHttpClient client = new OkHttpClient();
         HttpUrl.Builder urlBuilder = HttpUrl.parse("https://us-central1-meet-c7395.cloudfunctions.net/inviteList").newBuilder();
         urlBuilder.addQueryParameter("userUid", FirebaseAuth.getInstance().getCurrentUser().getUid());
-        urlBuilder.addQueryParameter("eventUid", eventUid);
+        urlBuilder.addQueryParameter("groupUid", groupUid);
         String url = urlBuilder.build().toString();
         Request request = new Request.Builder().url(url).build();
 
@@ -151,8 +151,8 @@ public class InviteFragment extends Fragment implements View.OnClickListener
             {
                 FirebaseDatabase.getInstance()
                         .getReference()
-                        .child(getString(R.string.db_events))
-                        .child(eventUid)
+                        .child(getString(R.string.db_groups))
+                        .child(groupUid)
                         .child(getString(R.string.db_members))
                         .child(inviteUsers.get(i))
                         .setValue(false);
@@ -160,7 +160,7 @@ public class InviteFragment extends Fragment implements View.OnClickListener
 
             faActivity.getSupportFragmentManager()
                     .beginTransaction()
-                    .add(R.id.content_container, EventListFragment.newInstance(), "eventList")
+                    .add(R.id.content_container, GroupListFragment.newInstance(), "groupList")
                     .commit();
         }
     }

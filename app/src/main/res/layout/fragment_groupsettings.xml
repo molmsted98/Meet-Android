@@ -10,37 +10,37 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:id="@+id/llCreateEvent">
+        android:id="@+id/llCreateGroup">
 
         <EditText
-            android:id="@+id/etEventName"
+            android:id="@+id/etGroupName"
             android:layout_width="287dp"
             android:layout_marginTop="20dp"
             android:layout_gravity="center"
             android:layout_height="wrap_content"
             android:textColor="@color/colorAccent"
             android:textColorHint="#ffffff"
-            android:hint="@string/make_event_hint"
+            android:hint="@string/make_group_hint"
             android:maxLines="1" />
 
         <EditText
-            android:id="@+id/etEventHashtag"
+            android:id="@+id/etGroupHashtag"
             android:layout_width="287dp"
             android:layout_gravity="center"
             android:layout_height="wrap_content"
             android:textColor="@color/colorAccent"
             android:textColorHint="#ffffff"
-            android:hint="Event Hashtag"
+            android:hint="Group Hashtag"
             android:maxLines="1" />
 
         <EditText
-            android:id="@+id/etEventLocation"
+            android:id="@+id/etGroupLocation"
             android:layout_width="287dp"
             android:layout_gravity="center"
             android:layout_height="wrap_content"
             android:textColor="@color/colorAccent"
             android:textColorHint="#ffffff"
-            android:hint="Event Location"
+            android:hint="Group Location"
             android:maxLines="1" />
 
         <LinearLayout
@@ -103,10 +103,10 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="20dp"
-            android:id="@+id/btnLeaveEvent"
+            android:id="@+id/btnLeaveGroup"
             android:padding="8dp"
             android:textColor="@color/colorAccent"
-            android:text="Leave Event"
+            android:text="Leave Group"
             android:background="@drawable/btn_login"/>
 
         <Button
@@ -125,10 +125,10 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="20dp"
-        android:id="@+id/btnDeleteEvent"
+        android:id="@+id/btnDeleteGroup"
         android:padding="8dp"
         android:textColor="@color/colorAccent"
-        android:text="Delete Event"
+        android:text="Delete Group"
         android:background="#CE391A"
         android:layout_alignParentBottom="true"/>
 </RelativeLayout>

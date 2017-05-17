@@ -15,7 +15,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,10 +26,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.tsuruta.meet.objects.User;
-import com.tsuruta.meet.recycler.EventRecyclerAdapter;
+import com.tsuruta.meet.recycler.GroupRecyclerAdapter;
 import com.tsuruta.meet.R;
 import com.tsuruta.meet.activities.MainActivity;
-import com.tsuruta.meet.objects.Event;
+import com.tsuruta.meet.objects.Group;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -42,32 +41,32 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class EventListFragment extends Fragment
+public class GroupListFragment extends Fragment
 {
     FragmentActivity faActivity;
     LinearLayout llLayout;
-    LinearLayout llEventList;
-    ArrayList<Event> events = new ArrayList<>();
+    LinearLayout llGroupList;
+    ArrayList<Group> groups = new ArrayList<>();
     ArrayList<ArrayList<String>> urlList = new ArrayList<>();
     ArrayList<ArrayList<String>> memberUids = new ArrayList<>();
     MainActivity parent;
-    TextView tvNoEvents;
+    TextView tvNoGroups;
     View mProgressView;
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
-    private EventRecyclerAdapter adapter;
+    private GroupRecyclerAdapter adapter;
 
-    public static EventListFragment newInstance()
+    public static GroupListFragment newInstance()
     {
-        return new EventListFragment();
+        return new GroupListFragment();
     }
 
     @Override
     public void onResume()
     {
         super.onResume();
-        events.clear();
-        getInviteEvents();
+        groups.clear();
+        getInviteGroups();
     }
 
     @Nullable
@@ -76,11 +75,11 @@ public class EventListFragment extends Fragment
     {
         faActivity = super.getActivity();
         parent = (MainActivity)getActivity();
-        llLayout = (LinearLayout)inflater.inflate(R.layout.fragment_eventlist, container, false);
-        llEventList = (LinearLayout)llLayout.findViewById(R.id.llEventList);
-        mProgressView = llLayout.findViewById(R.id.event_progress);
-        recyclerView = (RecyclerView)llLayout.findViewById(R.id.eventRecycler);
-        tvNoEvents = (TextView)llLayout.findViewById(R.id.tvNoEvents);
+        llLayout = (LinearLayout)inflater.inflate(R.layout.fragment_grouplist, container, false);
+        llGroupList = (LinearLayout)llLayout.findViewById(R.id.llGroupList);
+        mProgressView = llLayout.findViewById(R.id.group_progress);
+        recyclerView = (RecyclerView)llLayout.findViewById(R.id.groupRecycler);
+        tvNoGroups = (TextView)llLayout.findViewById(R.id.tvNoGroups);
         parent.setAddVisibility(true);
         showProgress(true);
         cacheUserData();
@@ -91,31 +90,31 @@ public class EventListFragment extends Fragment
     private void setupRecycler()
     {
         recyclerView.setVisibility(View.VISIBLE);
-        tvNoEvents.setVisibility(View.GONE);
+        tvNoGroups.setVisibility(View.GONE);
         recyclerView.setHasFixedSize(false);
         layoutManager = new LinearLayoutManager(faActivity);
         recyclerView.setLayoutManager(layoutManager);
-        adapter = new EventRecyclerAdapter(this, events, urlList);
+        adapter = new GroupRecyclerAdapter(this, groups, urlList);
         recyclerView.setAdapter(adapter);
         showProgress(false);
     }
 
-    public void eventClicked(int position)
+    public void groupClicked(int position)
     {
         faActivity.getSupportFragmentManager()
                 .beginTransaction()
-                .add(R.id.content_container, EventFragment.newInstance(events.get(position)), getString(R.string.fragment_event_name))
-                .addToBackStack(getString(R.string.fragment_event_name))
+                .add(R.id.content_container, GroupFragment.newInstance(groups.get(position)), getString(R.string.fragment_group_name))
+                .addToBackStack(getString(R.string.fragment_group_name))
                 .commit();
     }
 
-    public void joinEvent(int position)
+    public void joinGroup(int position)
     {
         final String currentUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         FirebaseDatabase.getInstance()
                 .getReference()
-                .child(getString(R.string.db_events))
-                .child(events.get(position).getUid())
+                .child(getString(R.string.db_groups))
+                .child(groups.get(position).getUid())
                 .child(getString(R.string.db_members))
                 .child(currentUid)
                 .setValue(true)
@@ -126,14 +125,14 @@ public class EventListFragment extends Fragment
                     {
                         if (task.isSuccessful())
                         {
-                            //Joined the event. Update the list now.
-                            events.clear();
-                            getInviteEvents();
+                            //Joined the group. Update the list now.
+                            groups.clear();
+                            getInviteGroups();
                         }
                         else
                         {
-                            // failed to add event
-                            Toast.makeText(faActivity.getApplicationContext(), "Failed to join event", Toast.LENGTH_LONG).show();
+                            // failed to add group
+                            Toast.makeText(faActivity.getApplicationContext(), "Failed to join group", Toast.LENGTH_LONG).show();
                         }
                     }
                 });
@@ -144,8 +143,8 @@ public class EventListFragment extends Fragment
         final String currentUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         FirebaseDatabase.getInstance()
                 .getReference()
-                .child(getString(R.string.db_events))
-                .child(events.get(position).getUid())
+                .child(getString(R.string.db_groups))
+                .child(groups.get(position).getUid())
                 .child(getString(R.string.db_members))
                 .child(currentUid)
                 .setValue(true)
@@ -156,13 +155,13 @@ public class EventListFragment extends Fragment
                     {
                         if (task.isSuccessful())
                         {
-                            //Joined the event. Update the list now.
-                            events.clear();
-                            getInviteEvents();
+                            //Joined the group. Update the list now.
+                            groups.clear();
+                            getInviteGroups();
                         }
                         else
                         {
-                            // failed to add event
+                            // failed to add group
                             Toast.makeText(faActivity.getApplicationContext(), "Failed to accept invite", Toast.LENGTH_LONG).show();
                         }
                     }
@@ -174,8 +173,8 @@ public class EventListFragment extends Fragment
         final String currentUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         FirebaseDatabase.getInstance()
                 .getReference()
-                .child(getString(R.string.db_events))
-                .child(events.get(position).getUid())
+                .child(getString(R.string.db_groups))
+                .child(groups.get(position).getUid())
                 .child(getString(R.string.db_members))
                 .child(currentUid)
                 .removeValue()
@@ -186,25 +185,25 @@ public class EventListFragment extends Fragment
                     {
                         if (task.isSuccessful())
                         {
-                            //Joined the event. Update the list now.
-                            events.clear();
-                            getInviteEvents();
+                            //Joined the group. Update the list now.
+                            groups.clear();
+                            getInviteGroups();
                         }
                         else
                         {
-                            // failed to add event
+                            // failed to add group
                             Toast.makeText(faActivity.getApplicationContext(), "Failed to deny invite", Toast.LENGTH_LONG).show();
                         }
                     }
                 });
     }
 
-    public void getInviteEvents()
+    public void getInviteGroups()
     {
         final String currentUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         FirebaseDatabase.getInstance()
                 .getReference()
-                .child(getString(R.string.db_events))
+                .child(getString(R.string.db_groups))
                 .orderByChild(getString(R.string.db_members) + "/" + currentUid)
                 .equalTo(false)
                 .addListenerForSingleValueEvent(new ValueEventListener()
@@ -217,44 +216,47 @@ public class EventListFragment extends Fragment
                         while (dataSnapshots.hasNext())
                         {
                             DataSnapshot dataSnapshotChild = dataSnapshots.next();
-                            Event event = dataSnapshotChild.getValue(Event.class);
-                            event.setUid(dataSnapshotChild.getKey());
-                            event.setInvited(true);
-                            event.setHasJoined(false);
-                            event.setTimestamp(Long.parseLong(dataSnapshotChild.child("timestamp").getValue().toString()));
-                            boolean flag = false;
-                            event.setTheMembers(getEventMembers(dataSnapshotChild));
-
-                            for(int i = 0; i < events.size(); i ++)
+                            Group group = dataSnapshotChild.getValue(Group.class);
+                            group.setUid(dataSnapshotChild.getKey());
+                            group.setInvited(true);
+                            group.setHasJoined(false);
+                            if(dataSnapshotChild.child("timestamp").getValue() != null)
                             {
-                                if(event.getUid().equals(events.get(i).getUid()))
+                                group.setTimestamp(Long.parseLong(dataSnapshotChild.child("timestamp").getValue().toString()));
+                            }
+                            boolean flag = false;
+                            group.setTheMembers(getGroupMembers(dataSnapshotChild));
+
+                            for(int i = 0; i < groups.size(); i ++)
+                            {
+                                if(group.getUid().equals(groups.get(i).getUid()))
                                 {
                                     flag = true;
                                 }
                             }
                             if(!flag)
                             {
-                                events.add(event);
+                                groups.add(group);
                             }
                         }
-                        getUsersEvents();
+                        getUsersGroups();
                     }
 
                     @Override
                     public void onCancelled(DatabaseError databaseError)
                     {
-                        // Unable to retrieve events.
-                        Toast.makeText(faActivity.getApplicationContext(), "Unable to retrieve invite events", Toast.LENGTH_LONG).show();
+                        // Unable to retrieve groups.
+                        Toast.makeText(faActivity.getApplicationContext(), "Unable to retrieve invite groups", Toast.LENGTH_LONG).show();
                     }
                 });
     }
 
-    public void getUsersEvents()
+    public void getUsersGroups()
     {
         final String currentUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         FirebaseDatabase.getInstance()
                 .getReference()
-                .child(getString(R.string.db_events))
+                .child(getString(R.string.db_groups))
                 .orderByChild(getString(R.string.db_members) + "/" + currentUid)
                 .equalTo(true)
                 .addListenerForSingleValueEvent(new ValueEventListener()
@@ -267,31 +269,34 @@ public class EventListFragment extends Fragment
                         while (dataSnapshots.hasNext())
                         {
                             DataSnapshot dataSnapshotChild = dataSnapshots.next();
-                            Event event = dataSnapshotChild.getValue(Event.class);
-                            event.setHasJoined(true);
-                            event.setUid(dataSnapshotChild.getKey());
-                            event.setTimestamp(Long.parseLong(dataSnapshotChild.child("timestamp").getValue().toString()));
-                            event.setTheMembers(getEventMembers(dataSnapshotChild));
-                            events.add(event);
+                            Group group = dataSnapshotChild.getValue(Group.class);
+                            group.setHasJoined(true);
+                            group.setUid(dataSnapshotChild.getKey());
+                            if(dataSnapshotChild.child("timestamp").getValue() != null)
+                            {
+                                group.setTimestamp(Long.parseLong(dataSnapshotChild.child("timestamp").getValue().toString()));
+                            }
+                            group.setTheMembers(getGroupMembers(dataSnapshotChild));
+                            groups.add(group);
                         }
-                        getPublicEvents();
+                        getPublicGroups();
                     }
 
                     @Override
                     public void onCancelled(DatabaseError databaseError)
                     {
-                        // Unable to retrieve events.
-                        Toast.makeText(faActivity.getApplicationContext(), "Unable to retrieve user events", Toast.LENGTH_LONG).show();
+                        // Unable to retrieve groups.
+                        Toast.makeText(faActivity.getApplicationContext(), "Unable to retrieve user groups", Toast.LENGTH_LONG).show();
                     }
                 });
     }
 
-    //TODO: Only show these events if mutual friends or close in proximity
-    public void getPublicEvents()
+    //TODO: Only show these groups if mutual friends or close in proximity
+    public void getPublicGroups()
     {
         FirebaseDatabase.getInstance()
                 .getReference()
-                .child(getString(R.string.db_events))
+                .child(getString(R.string.db_groups))
                 .orderByChild("public")
                 .equalTo(true)
                 .addListenerForSingleValueEvent(new ValueEventListener()
@@ -304,48 +309,51 @@ public class EventListFragment extends Fragment
                         while (dataSnapshots.hasNext())
                         {
                             DataSnapshot dataSnapshotChild = dataSnapshots.next();
-                            Event event = dataSnapshotChild.getValue(Event.class);
-                            event.setUid(dataSnapshotChild.getKey());
-                            event.setHasJoined(false);
-                            event.setTimestamp(Long.parseLong(dataSnapshotChild.child("timestamp").getValue().toString()));
-                            event.setTheMembers(getEventMembers(dataSnapshotChild));
-                            boolean flag = false;
-                            for(int i = 0; i < events.size(); i ++)
+                            Group group = dataSnapshotChild.getValue(Group.class);
+                            group.setUid(dataSnapshotChild.getKey());
+                            group.setHasJoined(false);
+                            if(dataSnapshotChild.child("timestamp").getValue() != null)
                             {
-                                if(event.getUid().equals(events.get(i).getUid()))
+                                group.setTimestamp(Long.parseLong(dataSnapshotChild.child("timestamp").getValue().toString()));
+                            }
+                            group.setTheMembers(getGroupMembers(dataSnapshotChild));
+                            boolean flag = false;
+                            for(int i = 0; i < groups.size(); i ++)
+                            {
+                                if(group.getUid().equals(groups.get(i).getUid()))
                                 {
                                     flag = true;
                                 }
                             }
                             if(!flag)
                             {
-                                events.add(event);
+                                groups.add(group);
                             }
                         }
-                        prepEventUserData();
+                        prepGroupUserData();
                     }
 
                     @Override
                     public void onCancelled(DatabaseError databaseError)
                     {
-                        // Unable to retrieve events.
-                        Toast.makeText(faActivity.getApplicationContext(), "Unable to retrieve public events", Toast.LENGTH_LONG).show();
+                        // Unable to retrieve groups.
+                        Toast.makeText(faActivity.getApplicationContext(), "Unable to retrieve public groups", Toast.LENGTH_LONG).show();
                     }
                 });
     }
 
-    public void prepEventUserData()
+    public void prepGroupUserData()
     {
-        //Get event creators names
-        for(int i = 0; i < events.size(); i ++)
+        //Get group creators names
+        for(int i = 0; i < groups.size(); i ++)
         {
-            String[] creatorData = getSavedUserData(events.get(i).getCreator());
-            events.get(i).setCreatorName(creatorData[0]);
-            //Get event members imageUrls
+            String[] creatorData = getSavedUserData(groups.get(i).getCreator());
+            groups.get(i).setCreatorName(creatorData[0]);
+            //Get group members imageUrls
             urlList.add(new ArrayList<String>());
-            for(int j = 0; j < events.get(i).getTheMembers().size(); j++)
+            for(int j = 0; j < groups.get(i).getTheMembers().size(); j++)
             {
-                String[] memberData = getSavedUserData(events.get(i).getTheMembers().get(j));
+                String[] memberData = getSavedUserData(groups.get(i).getTheMembers().get(j));
                 urlList.get(i).add(memberData[1]);
             }
         }
@@ -360,7 +368,7 @@ public class EventListFragment extends Fragment
             f.delete();
             final FileOutputStream fos = parent.openFileOutput(parent.getString(R.string.USERS_FILENAME), parent.getApplicationContext().MODE_PRIVATE);
 
-            //TODO: Only run this query for users in your events
+            //TODO: Only run this query for users in your groups
             FirebaseDatabase.getInstance()
                     .getReference()
                     .child(getString(R.string.db_users))
@@ -397,7 +405,7 @@ public class EventListFragment extends Fragment
                         @Override
                         public void onCancelled(DatabaseError databaseError)
                         {
-                            // Unable to retrieve events.
+                            // Unable to retrieve groups.
                             Toast.makeText(faActivity.getApplicationContext(), "Unable to retrieve users", Toast.LENGTH_LONG).show();
                         }
                     });
@@ -408,16 +416,16 @@ public class EventListFragment extends Fragment
         }
     }
 
-    private ArrayList<String> getEventMembers(DataSnapshot dataSnapshotChild)
+    private ArrayList<String> getGroupMembers(DataSnapshot dataSnapshotChild)
     {
         ArrayList<String> memberUids = new ArrayList<>();
 
         //Save member uids
-        Iterator<DataSnapshot> eventProperties = dataSnapshotChild.getChildren().iterator();
+        Iterator<DataSnapshot> groupProperties = dataSnapshotChild.getChildren().iterator();
         DataSnapshot members = null;
-        while (eventProperties.hasNext())
+        while (groupProperties.hasNext())
         {
-            DataSnapshot property = eventProperties.next();
+            DataSnapshot property = groupProperties.next();
             if(property.getKey().equals(getString(R.string.db_members)))
             {
                 members = property;
@@ -425,10 +433,10 @@ public class EventListFragment extends Fragment
         }
         if(members != null)
         {
-            Iterator<DataSnapshot> eventMembers = members.getChildren().iterator();
-            while(eventMembers.hasNext())
+            Iterator<DataSnapshot> groupMembers = members.getChildren().iterator();
+            while(groupMembers.hasNext())
             {
-                DataSnapshot potentialMember = eventMembers.next();
+                DataSnapshot potentialMember = groupMembers.next();
                 if((boolean)potentialMember.getValue())
                 {
                     memberUids.add(potentialMember.getKey());
@@ -474,14 +482,14 @@ public class EventListFragment extends Fragment
     {
         int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
-        llEventList.setVisibility(show ? View.GONE : View.VISIBLE);
-        llEventList.animate().setDuration(shortAnimTime).alpha(
+        llGroupList.setVisibility(show ? View.GONE : View.VISIBLE);
+        llGroupList.animate().setDuration(shortAnimTime).alpha(
                 show ? 0 : 1).setListener(new AnimatorListenerAdapter()
         {
             @Override
             public void onAnimationEnd(Animator animation)
             {
-                llEventList.setVisibility(show ? View.GONE : View.VISIBLE);
+                llGroupList.setVisibility(show ? View.GONE : View.VISIBLE);
             }
         });
 

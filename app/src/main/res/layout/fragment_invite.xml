@@ -14,7 +14,7 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Add Users to Event"
+        android:text="Add Users to Group"
         android:textSize="18sp"
         android:background="@color/colorPrimary"
         android:textColor="@color/right_text"

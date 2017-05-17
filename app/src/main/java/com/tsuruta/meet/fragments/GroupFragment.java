@@ -2,7 +2,6 @@ package com.tsuruta.meet.fragments;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -20,14 +19,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.toolbox.ImageRequest;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthProvider;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -37,21 +31,14 @@ import com.google.firebase.database.ValueEventListener;
 import com.tsuruta.meet.R;
 import com.tsuruta.meet.activities.MainActivity;
 import com.tsuruta.meet.objects.Chat;
-import com.tsuruta.meet.objects.Event;
-import com.tsuruta.meet.objects.User;
+import com.tsuruta.meet.objects.Group;
 import com.tsuruta.meet.recycler.ChatRecyclerAdapter;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import static com.google.android.gms.internal.zzt.TAG;
 
-public class EventFragment extends Fragment implements View.OnClickListener, View.OnFocusChangeListener
+public class GroupFragment extends Fragment implements View.OnClickListener, View.OnFocusChangeListener
 {
     FragmentActivity faActivity;
     LinearLayout llLayout;
@@ -59,17 +46,17 @@ public class EventFragment extends Fragment implements View.OnClickListener, Vie
     ImageView ivSendMessage, ivSettings;
     EditText etMessage;
     private FirebaseAuth mAuth;
-    Event event;
+    Group group;
     ArrayList<Chat> chats = new ArrayList<>();
     RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
     private ChatRecyclerAdapter adapter;
     boolean firstTime;
 
-    public static EventFragment newInstance(Event event)
+    public static GroupFragment newInstance(Group group)
     {
-        EventFragment ef = new EventFragment();
-        ef.event = event;
+        GroupFragment ef = new GroupFragment();
+        ef.group = group;
         return ef;
     }
 
@@ -87,7 +74,7 @@ public class EventFragment extends Fragment implements View.OnClickListener, Vie
     {
         faActivity = super.getActivity();
         parent = (MainActivity) getActivity();
-        llLayout = (LinearLayout) inflater.inflate(R.layout.fragment_event, container, false);
+        llLayout = (LinearLayout) inflater.inflate(R.layout.fragment_group, container, false);
         ivSendMessage = (ImageView) llLayout.findViewById(R.id.sendButton);
         ivSettings = (ImageView) llLayout.findViewById(R.id.btnSettings);
         etMessage = (EditText) llLayout.findViewById(R.id.messageArea);
@@ -97,12 +84,12 @@ public class EventFragment extends Fragment implements View.OnClickListener, Vie
         recyclerView = (RecyclerView) llLayout.findViewById(R.id.chatRecycler);
         recyclerView.setOnClickListener(this);
 
-        String eventName = event.getTitle();
-        parent.setActionBarTitle(eventName);
+        String groupName = group.getTitle();
+        parent.setActionBarTitle(groupName);
         parent.setAddVisibility(false);
 
         //TODO: Triple check that the user is logged in before allowing them to see the chat
-        //Also check to see that they're a member of the event
+        //Also check to see that they're a member of the group
 
         getAllChats();
 
@@ -117,8 +104,8 @@ public class EventFragment extends Fragment implements View.OnClickListener, Vie
             if(!etMessage.getText().toString().equals(""))
             {
                 String message = etMessage.getText().toString();
-                Chat newChat = new Chat(mAuth.getCurrentUser().getUid(), event.getUid(), message);
-                sendMessageToFirebaseEvent(parent.getApplicationContext(), newChat);
+                Chat newChat = new Chat(mAuth.getCurrentUser().getUid(), group.getUid(), message);
+                sendMessageToFirebaseGroup(parent.getApplicationContext(), newChat);
                 etMessage.setText("");
             }
         }
@@ -126,8 +113,8 @@ public class EventFragment extends Fragment implements View.OnClickListener, Vie
         {
             faActivity.getSupportFragmentManager()
                     .beginTransaction()
-                    .add(R.id.content_container, EventSettingsFragment.newInstance(event), "eventSettings")
-                    .addToBackStack("eventSettings")
+                    .add(R.id.content_container, GroupSettingsFragment.newInstance(group), "groupSettings")
+                    .addToBackStack("groupSettings")
                     .commit();
         }
     }
@@ -144,15 +131,15 @@ public class EventFragment extends Fragment implements View.OnClickListener, Vie
         }
     }
 
-    public void sendMessageToFirebaseEvent(final Context context, final Chat chat)
+    public void sendMessageToFirebaseGroup(final Context context, final Chat chat)
     {
         final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
         final String newUid = databaseReference.child(getString(R.string.db_chats)).push().getKey();
         chat.setUid(newUid);
 
-        Log.e(TAG, "sendMessageToFirebaseEvent: success");
+        Log.e(TAG, "sendMessageToFirebaseGroup: success");
         databaseReference.child(getString(R.string.db_chats))
-                .child(chat.getEventUid())
+                .child(chat.getGroupUid())
                 .push()
                 .setValue(chat.toMap())
                 .addOnCompleteListener(new OnCompleteListener<Void>()
@@ -178,7 +165,7 @@ public class EventFragment extends Fragment implements View.OnClickListener, Vie
         FirebaseDatabase.getInstance()
                 .getReference()
                 .child(getString(R.string.db_chats))
-                .child(event.getUid())
+                .child(group.getUid())
                 .addListenerForSingleValueEvent(new ValueEventListener()
                 {
                     @Override
@@ -187,7 +174,7 @@ public class EventFragment extends Fragment implements View.OnClickListener, Vie
                         FirebaseDatabase.getInstance()
                                 .getReference()
                                 .child(getString(R.string.db_chats))
-                                .child(event.getUid())
+                                .child(group.getUid())
                                 .orderByChild("timestamp")
                                 .addChildEventListener(new ChildEventListener()
                                 {

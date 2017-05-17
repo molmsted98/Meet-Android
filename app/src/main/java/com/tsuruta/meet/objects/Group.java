@@ -6,33 +6,33 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Event
+public class Group
 {
-    private String eventTitle, eventCreator, eventCreatorName;
+    private String groupTitle, groupCreator, groupCreatorName;
     private boolean mPublic, mInvite, mJoined, invited;
     private String uid;
     private ArrayList<String> members = new ArrayList<>();
     private long timestamp;
 
-    public Event(){}
+    public Group(){}
 
-    public Event(String eventTitle, String eventCreator, boolean mPublic,
+    public Group(String groupTitle, String groupCreator, boolean mPublic,
                  boolean mInvite)
     {
-        this.eventCreator = eventCreator;
-        this.eventTitle = eventTitle;
+        this.groupCreator = groupCreator;
+        this.groupTitle = groupTitle;
         this.mPublic = mPublic;
         this.mInvite = mInvite;
     }
 
     public String getTitle()
     {
-        return eventTitle;
+        return groupTitle;
     }
 
     public String getCreator()
     {
-        return eventCreator;
+        return groupCreator;
     }
 
     //Look to see if the current user is in the userlist
@@ -63,7 +63,7 @@ public class Event
 
     public void setCreator(String creator)
     {
-        this.eventCreator = creator;
+        this.groupCreator = creator;
     }
 
     public void setTimestamp(long timestamp)
@@ -73,7 +73,7 @@ public class Event
 
     public void setTitle(String title)
     {
-        this.eventTitle = title;
+        this.groupTitle = title;
     }
 
     public void setInvite(boolean b)
@@ -88,12 +88,12 @@ public class Event
 
     public void setCreatorName(String name)
     {
-        this.eventCreatorName = name;
+        this.groupCreatorName = name;
     }
 
     public String getCreatorName()
     {
-        return eventCreatorName;
+        return groupCreatorName;
     }
 
     public void setTheMembers(ArrayList<String> memberUids)
@@ -130,8 +130,8 @@ public class Event
     public Map<String, Object> toMap()
     {
         HashMap<String, Object> result = new HashMap<>();
-        result.put("title", eventTitle);
-        result.put("creator", eventCreator);
+        result.put("title", groupTitle);
+        result.put("creator", groupCreator);
         result.put("public", mPublic);
         result.put("invite", mInvite);
 

@@ -7,30 +7,30 @@ import java.util.Map;
 
 public class Chat {
     public String senderUid;
-    public String eventUid;
+    public String groupUid;
     public String message;
     private String uid;
 
     public Chat(){}
 
-    public Chat(String senderUid, String eventUid, String message, String uid)
+    public Chat(String senderUid, String groupUid, String message, String uid)
     {
         this.senderUid = senderUid;
-        this.eventUid = eventUid;
+        this.groupUid = groupUid;
         this.message = message;
         this.uid = uid;
     }
 
-    public Chat(String senderUid, String eventUid, String message)
+    public Chat(String senderUid, String groupUid, String message)
     {
         this.senderUid = senderUid;
-        this.eventUid = eventUid;
+        this.groupUid = groupUid;
         this.message = message;
     }
 
-    public String getEventUid()
+    public String getGroupUid()
     {
-        return eventUid;
+        return groupUid;
     }
 
     public String getMessage()
