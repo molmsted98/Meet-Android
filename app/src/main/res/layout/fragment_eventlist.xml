@@ -5,18 +5,35 @@
     android:layout_height="match_parent"
     android:background="@color/colorAccent"
     android:clickable="true">
-    <TextView
+
+    <ProgressBar
+        android:id="@+id/event_progress"
+        style="?android:attr/progressBarStyleLargeInverse"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="100dp"
-        android:text="@string/no_events"
-        android:textSize="25sp"
-        android:id="@+id/tvNoEvents"/>
-    <android.support.v7.widget.RecyclerView
+        android:layout_marginTop="50dp"
+        android:layout_marginBottom="8dp"
+        android:layout_gravity="center"
+        android:visibility="visible" />
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/eventRecycler"
-        android:scrollbars="vertical"
-        android:visibility="gone"/>
+        android:orientation="vertical"
+        android:id="@+id/llEventList">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="100dp"
+            android:text="@string/no_events"
+            android:textSize="25sp"
+            android:id="@+id/tvNoEvents"/>
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/eventRecycler"
+            android:scrollbars="vertical"
+            android:visibility="gone"/>
+    </LinearLayout>
 </LinearLayout>

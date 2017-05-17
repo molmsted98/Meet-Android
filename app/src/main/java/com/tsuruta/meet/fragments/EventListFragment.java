@@ -1,5 +1,9 @@
 package com.tsuruta.meet.fragments;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.annotation.TargetApi;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,11 +46,13 @@ public class EventListFragment extends Fragment
 {
     FragmentActivity faActivity;
     LinearLayout llLayout;
+    LinearLayout llEventList;
     ArrayList<Event> events = new ArrayList<>();
     ArrayList<ArrayList<String>> urlList = new ArrayList<>();
     ArrayList<ArrayList<String>> memberUids = new ArrayList<>();
     MainActivity parent;
     TextView tvNoEvents;
+    View mProgressView;
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
     private EventRecyclerAdapter adapter;
@@ -70,9 +77,12 @@ public class EventListFragment extends Fragment
         faActivity = super.getActivity();
         parent = (MainActivity)getActivity();
         llLayout = (LinearLayout)inflater.inflate(R.layout.fragment_eventlist, container, false);
+        llEventList = (LinearLayout)llLayout.findViewById(R.id.llEventList);
+        mProgressView = llLayout.findViewById(R.id.event_progress);
         recyclerView = (RecyclerView)llLayout.findViewById(R.id.eventRecycler);
         tvNoEvents = (TextView)llLayout.findViewById(R.id.tvNoEvents);
         parent.setAddVisibility(true);
+        showProgress(true);
         cacheUserData();
 
         return llLayout;
@@ -87,6 +97,7 @@ public class EventListFragment extends Fragment
         recyclerView.setLayoutManager(layoutManager);
         adapter = new EventRecyclerAdapter(this, events, urlList);
         recyclerView.setAdapter(adapter);
+        showProgress(false);
     }
 
     public void eventClicked(int position)
@@ -453,5 +464,36 @@ public class EventListFragment extends Fragment
             data[1] = "https://www.gravatar.com/avatar/b00a4353a9ad54c5c914a028280c0f3f?s=32&d=identicon&r=PG&f=1";
             return data;
         }
+    }
+
+    /**
+     * Shows the progress UI and hides the login form.
+     */
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+    private void showProgress(final boolean show)
+    {
+        int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+
+        llEventList.setVisibility(show ? View.GONE : View.VISIBLE);
+        llEventList.animate().setDuration(shortAnimTime).alpha(
+                show ? 0 : 1).setListener(new AnimatorListenerAdapter()
+        {
+            @Override
+            public void onAnimationEnd(Animator animation)
+            {
+                llEventList.setVisibility(show ? View.GONE : View.VISIBLE);
+            }
+        });
+
+        mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+        mProgressView.animate().setDuration(shortAnimTime).alpha(
+                show ? 1 : 0).setListener(new AnimatorListenerAdapter()
+        {
+            @Override
+            public void onAnimationEnd(Animator animation)
+            {
+                mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            }
+        });
     }
 }
