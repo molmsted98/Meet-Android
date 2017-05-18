@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="200dp"
+    android:layout_height="200dp"
+    android:background="@drawable/test_image"
+    android:layout_margin="2dp"
+    android:padding="16dp"
+    android:id="@+id/rlEventCard">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TITLE"
+            style="@style/Base.TextAppearance.AppCompat.Medium"
+            android:textAlignment="center"
+            android:textStyle="bold"
+            android:textColor="#ffffff"
+            android:textSize="24sp"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="20"
+            android:shadowColor="#000000"
+            android:layout_gravity="center_horizontal"
+            android:id="@+id/tvEventTitle"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="CREATED BY"
+            android:textAlignment="center"
+            android:textColor="#ffffff"
+            android:layout_gravity="center_horizontal"
+            android:padding="4dp"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="20"
+            android:shadowColor="#000000"
+            android:id="@+id/tvEventLocation"/>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvDate"
+            android:textColor="#ffffff"
+            android:textAlignment="center"
+            android:text="5/17/17"
+            android:layout_alignParentLeft="true"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="20"
+            android:shadowColor="#000000"
+            android:textStyle="bold"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvTime"
+            android:textAlignment="center"
+            android:textColor="#ffffff"
+            android:textStyle="bold"
+            android:text="7:30 PM"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="20"
+            android:shadowColor="#000000"
+            android:layout_alignParentRight="true"/>
+    </RelativeLayout>
+
+
+</RelativeLayout>

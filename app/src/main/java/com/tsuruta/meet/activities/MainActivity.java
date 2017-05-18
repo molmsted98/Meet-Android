@@ -16,6 +16,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.tsuruta.meet.fragments.FindEventFragment;
 import com.tsuruta.meet.fragments.GroupListFragment;
 import com.tsuruta.meet.R;
 import com.tsuruta.meet.fragments.MakeGroupFragment;
@@ -114,7 +115,7 @@ public class MainActivity extends AppCompatActivity
         {
             getSupportFragmentManager()
                     .beginTransaction()
-                    .add(R.id.content_container, GroupListFragment.newInstance(), getString(R.string.fragment_grouplist_name))
+                    .add(R.id.content_container, FindEventFragment.Companion.newInstance(), getString(R.string.fragment_grouplist_name))
                     .addToBackStack(getString(R.string.fragment_grouplist_name))
                     .commit();
         }
