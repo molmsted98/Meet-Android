@@ -65,6 +65,7 @@ public class MakeGroupFragment extends Fragment implements View.OnClickListener
         btnCreateGroup.setOnClickListener(this);
         sPublic.setOnClickListener(this);
         parent.setAddVisibility(false);
+        parent.setBottomNavigationViewVisibility(false);
 
         return llLayout;
     }
@@ -77,7 +78,6 @@ public class MakeGroupFragment extends Fragment implements View.OnClickListener
             showProgress(true);
 
             final boolean mPublic = sPublic.isChecked();
-            long timestamp = System.currentTimeMillis();
 
             final FirebaseUser currentUser = mAuth.getCurrentUser();
             Group newGroup = new Group(etGroupName.getText().toString(), currentUser.getUid(),
@@ -128,14 +128,15 @@ public class MakeGroupFragment extends Fragment implements View.OnClickListener
                                                     {
                                                         faActivity.getSupportFragmentManager()
                                                                 .beginTransaction()
-                                                                .add(R.id.content_container, GroupListFragment.newInstance(), "groupList")
+                                                                .add(R.id.content_container, GroupListFragment.newInstance(), getString(R.string.fragment_grouplist_name))
+                                                                .addToBackStack(getString(R.string.fragment_grouplist_name))
                                                                 .commit();
                                                     }
                                                 }
                                                 else
                                                 {
-                                                    // failed to add group
-                                                    Toast.makeText(faActivity.getApplicationContext(), "Failed to create group", Toast.LENGTH_LONG).show();
+                                                    //Failed to add owner to member list
+                                                    Toast.makeText(faActivity.getApplicationContext(), "Failed to update members", Toast.LENGTH_LONG).show();
                                                 }
                                             }
                                         });

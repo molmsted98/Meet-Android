@@ -34,7 +34,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-
 public class InviteFragment extends Fragment implements View.OnClickListener
 {
     FragmentActivity faActivity;
@@ -67,7 +66,7 @@ public class InviteFragment extends Fragment implements View.OnClickListener
         {
             inviteUsers.remove(uid);
         }
-        System.out.println("Size of users " + inviteUsers.size());
+
         if(inviteUsers.size() == 0)
         {
             btnAddUsers.setEnabled(false);
@@ -92,9 +91,10 @@ public class InviteFragment extends Fragment implements View.OnClickListener
         mHandler = new Handler(Looper.getMainLooper());
 
         parent.setAddVisibility(false);
+        parent.setBottomNavigationViewVisibility(false);
 
         OkHttpClient client = new OkHttpClient();
-        HttpUrl.Builder urlBuilder = HttpUrl.parse("https://us-central1-meet-c7395.cloudfunctions.net/inviteList").newBuilder();
+        HttpUrl.Builder urlBuilder = HttpUrl.parse(getString(R.string.invite_url)).newBuilder();
         urlBuilder.addQueryParameter("userUid", FirebaseAuth.getInstance().getCurrentUser().getUid());
         urlBuilder.addQueryParameter("groupUid", groupUid);
         String url = urlBuilder.build().toString();
@@ -160,7 +160,8 @@ public class InviteFragment extends Fragment implements View.OnClickListener
 
             faActivity.getSupportFragmentManager()
                     .beginTransaction()
-                    .add(R.id.content_container, GroupListFragment.newInstance(), "groupList")
+                    .add(R.id.content_container, GroupListFragment.newInstance(), getString(R.string.fragment_grouplist_name))
+                    .addToBackStack(getString(R.string.fragment_grouplist_name))
                     .commit();
         }
     }

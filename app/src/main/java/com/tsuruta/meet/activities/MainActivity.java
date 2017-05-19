@@ -2,12 +2,12 @@ package com.tsuruta.meet.activities;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.TextView;
+import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -16,6 +16,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.tsuruta.meet.CenteredToolbar;
 import com.tsuruta.meet.fragments.FindEventFragment;
 import com.tsuruta.meet.fragments.GroupListFragment;
 import com.tsuruta.meet.R;
@@ -23,13 +24,49 @@ import com.tsuruta.meet.fragments.MakeGroupFragment;
 
 public class MainActivity extends AppCompatActivity
 {
+    private BottomNavigationView bottomNavigationView;
+    private CenteredToolbar myToolbar;
+
     @Override
     protected void onCreate(final Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        myToolbar = (CenteredToolbar)findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
+
+        bottomNavigationView = (BottomNavigationView)findViewById(R.id.bottom_navigation);
+
+        bottomNavigationView.setOnNavigationItemSelectedListener(
+                new BottomNavigationView.OnNavigationItemSelectedListener()
+                {
+                    @Override
+                    public boolean onNavigationItemSelected(@NonNull MenuItem item)
+                    {
+                        switch (item.getItemId())
+                        {
+                            //TODO: Add the previous fragment to the backstack
+                            case R.id.menu_find_events:
+                                getSupportFragmentManager()
+                                        .beginTransaction()
+                                        .add(R.id.content_container, FindEventFragment.Companion.newInstance(), getString(R.string.fragment_findevent_name))
+                                        .addToBackStack(getString(R.string.fragment_findevent_name))
+                                        .commit();
+                                break;
+                            case R.id.menu_my_groups:
+                                getSupportFragmentManager()
+                                        .beginTransaction()
+                                        .add(R.id.content_container, GroupListFragment.newInstance(), getString(R.string.fragment_grouplist_name))
+                                        .addToBackStack(getString(R.string.fragment_grouplist_name))
+                                        .commit();
+                                break;
+                            case R.id.menu_settings:
+                                //TODO: Implement settings fragment here
+                                break;
+                        }
+                        return false;
+                    }
+                });
 
         //Look for a new token in case it's a new device
         final String userToken = FirebaseInstanceId.getInstance().getToken();
@@ -79,13 +116,13 @@ public class MainActivity extends AppCompatActivity
                                                                 if (task.isSuccessful())
                                                                 {
                                                                     //All data updated
-                                                                    loadGroupList(savedInstanceState);
+                                                                    loadFirstFragment(savedInstanceState);
                                                                 }
                                                                 else
                                                                 {
                                                                     //Failed to add name
                                                                     Toast.makeText(getApplicationContext(), "Unable to add name to database", Toast.LENGTH_LONG).show();
-                                                                    loadGroupList(savedInstanceState);
+                                                                    loadFirstFragment(savedInstanceState);
                                                                 }
                                                             }
                                                         });
@@ -94,7 +131,7 @@ public class MainActivity extends AppCompatActivity
                                             {
                                                 //Failed to add photourl
                                                 Toast.makeText(getApplicationContext(), "Unable to add photourl to database", Toast.LENGTH_LONG).show();
-                                                loadGroupList(savedInstanceState);
+                                                loadFirstFragment(savedInstanceState);
                                             }
                                         }
                                     });
@@ -103,20 +140,20 @@ public class MainActivity extends AppCompatActivity
                         {
                             //Failed to add token
                             Toast.makeText(getApplicationContext(), "Unable to add token to database", Toast.LENGTH_LONG).show();
-                            loadGroupList(savedInstanceState);
+                            loadFirstFragment(savedInstanceState);
                         }
                     }
                 });
     }
 
-    public void loadGroupList(Bundle savedInstanceState)
+    public void loadFirstFragment(Bundle savedInstanceState)
     {
         if(savedInstanceState == null)
         {
             getSupportFragmentManager()
                     .beginTransaction()
-                    .add(R.id.content_container, FindEventFragment.Companion.newInstance(), getString(R.string.fragment_grouplist_name))
-                    .addToBackStack(getString(R.string.fragment_grouplist_name))
+                    .add(R.id.content_container, FindEventFragment.Companion.newInstance(), getString(R.string.fragment_findevent_name))
+                    .addToBackStack(getString(R.string.fragment_findevent_name))
                     .commit();
         }
     }
@@ -152,19 +189,42 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onBackPressed()
     {
+        String currentFragment = getSupportFragmentManager().getBackStackEntryAt(getSupportFragmentManager().getBackStackEntryCount() - 1).getName();
+
         //Close the app only when back is pressed on the main screen.
-        //TODO: This is a pretty trash solution to the problem, fix it please.
-        //Problem: You shouldn't be able to switch from MainActivity back to LoginActivity, unless you click LogOut button.
-        if(getSupportFragmentManager().getBackStackEntryAt(getSupportFragmentManager().getBackStackEntryCount() - 1).getName().equals(getString(R.string.fragment_grouplist_name)))
+        if(currentFragment.equals(getString(R.string.fragment_grouplist_name)))
+        {
+            this.finishAffinity();
+        }
+        else if(currentFragment.equals(getString(R.string.fragment_findevent_name)))
         {
             this.finishAffinity();
         }
         else
         {
-            if(getSupportFragmentManager().getBackStackEntryAt(getSupportFragmentManager().getBackStackEntryCount() - 2).getName().equals(getString(R.string.fragment_grouplist_name)))
+            String nextFragment = getSupportFragmentManager().getBackStackEntryAt(getSupportFragmentManager().getBackStackEntryCount() - 2).getName();
+
+            if(nextFragment.equals(getString(R.string.fragment_grouplist_name)))
             {
                 setAddVisibility(true);
                 setActionBarTitle(getString(R.string.app_name));
+                setBottomNavigationViewVisibility(true);
+            }
+            else if(nextFragment.equals(getString(R.string.fragment_group_name)))
+            {
+                setAddVisibility(false);
+                setBottomNavigationViewVisibility(false);
+            }
+            else if(nextFragment.equals(getString(R.string.fragment_findevent_name)))
+            {
+                setAddVisibility(false);
+                setBottomNavigationViewVisibility(true);
+                setActionBarTitle(getString(R.string.app_name));
+            }
+            else if(nextFragment.equals(getString(R.string.fragment_groupsettings_name)))
+            {
+                setAddVisibility(false);
+                setBottomNavigationViewVisibility(false);
             }
             getSupportFragmentManager().popBackStack();
         }
@@ -172,15 +232,24 @@ public class MainActivity extends AppCompatActivity
 
     public void setActionBarTitle(String name)
     {
-        Toolbar tb = (Toolbar)findViewById(R.id.my_toolbar);
-        TextView tTitle = (TextView)tb.findViewById(R.id.toolbar_title);
-        tTitle.setText(name);
+        myToolbar.setTitle(name);
+    }
+
+    public void setBottomNavigationViewVisibility(boolean b)
+    {
+        if(b)
+        {
+            bottomNavigationView.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            bottomNavigationView.setVisibility(View.GONE);
+        }
     }
 
     public void setAddVisibility(boolean b)
     {
-        Toolbar tb = (Toolbar)findViewById(R.id.my_toolbar);
-        Menu menu = tb.getMenu();
+        Menu menu = myToolbar.getMenu();
         MenuItem menuItemAdd = menu.findItem(R.id.action_newGroup);
         menuItemAdd.setVisible(b);
     }

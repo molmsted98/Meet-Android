@@ -87,6 +87,7 @@ public class GroupFragment extends Fragment implements View.OnClickListener, Vie
         String groupName = group.getTitle();
         parent.setActionBarTitle(groupName);
         parent.setAddVisibility(false);
+        parent.setBottomNavigationViewVisibility(false);
 
         //TODO: Triple check that the user is logged in before allowing them to see the chat
         //Also check to see that they're a member of the group
@@ -113,8 +114,8 @@ public class GroupFragment extends Fragment implements View.OnClickListener, Vie
         {
             faActivity.getSupportFragmentManager()
                     .beginTransaction()
-                    .add(R.id.content_container, GroupSettingsFragment.newInstance(group), "groupSettings")
-                    .addToBackStack("groupSettings")
+                    .add(R.id.content_container, GroupSettingsFragment.newInstance(group), getString(R.string.fragment_groupsettings_name))
+                    .addToBackStack(getString(R.string.fragment_groupsettings_name))
                     .commit();
         }
     }

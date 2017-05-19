@@ -10,14 +10,10 @@ import com.tsuruta.meet.fragments.FindEventFragment
 import com.tsuruta.meet.objects.Event
 
 import java.util.ArrayList
-import android.os.Build
 import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
 import android.graphics.Bitmap
 import com.bumptech.glide.request.animation.GlideAnimation
 import com.bumptech.glide.request.target.SimpleTarget
-
-
 
 class EventRecyclerAdapter(val parent: FindEventFragment, private var events: ArrayList<Event>) : RecyclerView.Adapter<EventRecyclerViewHolder>()
 {

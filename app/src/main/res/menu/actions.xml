@@ -5,5 +5,6 @@
     <item android:id="@+id/action_newGroup"
         android:title="New Group"
         app:showAsAction="always"
-        android:icon="@drawable/ic_add_circle_outline_black_24dp"/>
+        android:icon="@drawable/ic_group_add_white_24dp"
+        android:visible="false"/>
 </menu>

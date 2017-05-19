@@ -64,6 +64,7 @@ public class GroupSettingsFragment extends Fragment implements View.OnClickListe
         btnDelete.setOnClickListener(this);
         sPublic.setOnClickListener(this);
         parent.setAddVisibility(false);
+        parent.setBottomNavigationViewVisibility(false);
 
         //Determines what access the user should have for group settings
         owner = (FirebaseAuth.getInstance().getCurrentUser().getUid().equals(group.getCreator()));
@@ -123,24 +124,24 @@ public class GroupSettingsFragment extends Fragment implements View.OnClickListe
                                                                     }
                                                                     else
                                                                     {
-                                                                        // failed to delete group
-                                                                        Toast.makeText(faActivity.getApplicationContext(), "Failed to update group", Toast.LENGTH_LONG).show();
+                                                                        //Failed to update title
+                                                                        Toast.makeText(faActivity.getApplicationContext(), "Failed to update group title", Toast.LENGTH_LONG).show();
                                                                     }
                                                                 }
                                                             });
                                                 }
                                                 else
                                                 {
-                                                    // failed to delete group
-                                                    Toast.makeText(faActivity.getApplicationContext(), "Failed to update group", Toast.LENGTH_LONG).show();
+                                                    //Failed to update invite
+                                                    Toast.makeText(faActivity.getApplicationContext(), "Failed to update group invite", Toast.LENGTH_LONG).show();
                                                 }
                                             }
                                         });
                             }
                             else
                             {
-                                // failed to delete group
-                                Toast.makeText(faActivity.getApplicationContext(), "Failed to update group", Toast.LENGTH_LONG).show();
+                                //Failed to update public
+                                Toast.makeText(faActivity.getApplicationContext(), "Failed to update group public", Toast.LENGTH_LONG).show();
                             }
                         }
                     });
@@ -150,7 +151,6 @@ public class GroupSettingsFragment extends Fragment implements View.OnClickListe
             faActivity.getSupportFragmentManager()
                     .beginTransaction()
                     .add(R.id.content_container, InviteFragment.newInstance(group.getUid()), "invite")
-                    .addToBackStack("groupSettings")
                     .commit();
         }
         else if(view == btnLeave)
@@ -172,11 +172,12 @@ public class GroupSettingsFragment extends Fragment implements View.OnClickListe
                                 faActivity.getSupportFragmentManager()
                                         .beginTransaction()
                                         .add(R.id.content_container, GroupListFragment.newInstance(), getString(R.string.fragment_grouplist_name))
+                                        .addToBackStack(getString(R.string.fragment_grouplist_name))
                                         .commit();
                             }
                             else
                             {
-                                // failed to delete group
+                                //Failed to leave group
                                 Toast.makeText(faActivity.getApplicationContext(), "Failed to leave group", Toast.LENGTH_LONG).show();
                             }
                         }
@@ -200,6 +201,7 @@ public class GroupSettingsFragment extends Fragment implements View.OnClickListe
                                 faActivity.getSupportFragmentManager()
                                         .beginTransaction()
                                         .add(R.id.content_container, GroupListFragment.newInstance(), getString(R.string.fragment_grouplist_name))
+                                        .addToBackStack(getString(R.string.fragment_grouplist_name))
                                         .commit();
                             }
                             else

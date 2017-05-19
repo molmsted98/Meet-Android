@@ -48,13 +48,14 @@ public class GroupListFragment extends Fragment
     LinearLayout llGroupList;
     ArrayList<Group> groups = new ArrayList<>();
     ArrayList<ArrayList<String>> urlList = new ArrayList<>();
-    ArrayList<ArrayList<String>> memberUids = new ArrayList<>();
     MainActivity parent;
     TextView tvNoGroups;
     View mProgressView;
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
     private GroupRecyclerAdapter adapter;
+    String dbGroups, dbMembers, dbUsers;
+    int shortAnimTime;
 
     public static GroupListFragment newInstance()
     {
@@ -81,7 +82,15 @@ public class GroupListFragment extends Fragment
         recyclerView = (RecyclerView)llLayout.findViewById(R.id.groupRecycler);
         tvNoGroups = (TextView)llLayout.findViewById(R.id.tvNoGroups);
         parent.setAddVisibility(true);
+        parent.setBottomNavigationViewVisibility(true);
         showProgress(true);
+        shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+
+        //Get database constants
+        dbGroups = getString(R.string.db_groups);
+        dbMembers = getString(R.string.db_members);
+        dbUsers = getString(R.string.db_users);
+
         cacheUserData();
 
         return llLayout;
@@ -113,9 +122,9 @@ public class GroupListFragment extends Fragment
         final String currentUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         FirebaseDatabase.getInstance()
                 .getReference()
-                .child(getString(R.string.db_groups))
+                .child(dbGroups)
                 .child(groups.get(position).getUid())
-                .child(getString(R.string.db_members))
+                .child(dbMembers)
                 .child(currentUid)
                 .setValue(true)
                 .addOnCompleteListener(new OnCompleteListener<Void>()
@@ -143,9 +152,9 @@ public class GroupListFragment extends Fragment
         final String currentUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         FirebaseDatabase.getInstance()
                 .getReference()
-                .child(getString(R.string.db_groups))
+                .child(dbGroups)
                 .child(groups.get(position).getUid())
-                .child(getString(R.string.db_members))
+                .child(dbMembers)
                 .child(currentUid)
                 .setValue(true)
                 .addOnCompleteListener(new OnCompleteListener<Void>()
@@ -173,9 +182,9 @@ public class GroupListFragment extends Fragment
         final String currentUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         FirebaseDatabase.getInstance()
                 .getReference()
-                .child(getString(R.string.db_groups))
+                .child(dbGroups)
                 .child(groups.get(position).getUid())
-                .child(getString(R.string.db_members))
+                .child(dbMembers)
                 .child(currentUid)
                 .removeValue()
                 .addOnCompleteListener(new OnCompleteListener<Void>()
@@ -203,8 +212,8 @@ public class GroupListFragment extends Fragment
         final String currentUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         FirebaseDatabase.getInstance()
                 .getReference()
-                .child(getString(R.string.db_groups))
-                .orderByChild(getString(R.string.db_members) + "/" + currentUid)
+                .child(dbGroups)
+                .orderByChild(dbMembers + "/" + currentUid)
                 .equalTo(false)
                 .addListenerForSingleValueEvent(new ValueEventListener()
                 {
@@ -256,8 +265,8 @@ public class GroupListFragment extends Fragment
         final String currentUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         FirebaseDatabase.getInstance()
                 .getReference()
-                .child(getString(R.string.db_groups))
-                .orderByChild(getString(R.string.db_members) + "/" + currentUid)
+                .child(dbGroups)
+                .orderByChild(dbMembers + "/" + currentUid)
                 .equalTo(true)
                 .addListenerForSingleValueEvent(new ValueEventListener()
                 {
@@ -296,7 +305,7 @@ public class GroupListFragment extends Fragment
     {
         FirebaseDatabase.getInstance()
                 .getReference()
-                .child(getString(R.string.db_groups))
+                .child(dbGroups)
                 .orderByChild("public")
                 .equalTo(true)
                 .addListenerForSingleValueEvent(new ValueEventListener()
@@ -426,7 +435,7 @@ public class GroupListFragment extends Fragment
         while (groupProperties.hasNext())
         {
             DataSnapshot property = groupProperties.next();
-            if(property.getKey().equals(getString(R.string.db_members)))
+            if(property.getKey().equals(dbMembers))
             {
                 members = property;
             }
@@ -480,8 +489,6 @@ public class GroupListFragment extends Fragment
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     private void showProgress(final boolean show)
     {
-        int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
-
         llGroupList.setVisibility(show ? View.GONE : View.VISIBLE);
         llGroupList.animate().setDuration(shortAnimTime).alpha(
                 show ? 0 : 1).setListener(new AnimatorListenerAdapter()

@@ -23,26 +23,6 @@
             android:hint="@string/make_group_hint"
             android:maxLines="1" />
 
-        <EditText
-            android:id="@+id/etGroupHashtag"
-            android:layout_width="287dp"
-            android:layout_gravity="center"
-            android:layout_height="wrap_content"
-            android:textColor="@color/colorAccent"
-            android:textColorHint="#ffffff"
-            android:hint="Group Hashtag"
-            android:maxLines="1" />
-
-        <EditText
-            android:id="@+id/etGroupLocation"
-            android:layout_width="287dp"
-            android:layout_gravity="center"
-            android:layout_height="wrap_content"
-            android:textColor="@color/colorAccent"
-            android:textColorHint="#ffffff"
-            android:hint="Group Location"
-            android:maxLines="1" />
-
         <LinearLayout
             android:layout_width="287dp"
             android:layout_height="wrap_content"

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/menu_find_events"
+        android:enabled="true"
+        android:icon="@drawable/ic_explore_white_24dp"
+        android:title="Find Events"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/menu_my_groups"
+        android:enabled="true"
+        android:icon="@drawable/ic_group_white_24dp"
+        android:title="My Groups"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/menu_settings"
+        android:enabled="true"
+        android:icon="@drawable/ic_settings_white_24dp"
+        android:title="Settings"
+        app:showAsAction="ifRoom" />
+</menu>

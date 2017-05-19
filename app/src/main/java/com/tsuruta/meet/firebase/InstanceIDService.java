@@ -13,9 +13,8 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
 import com.tsuruta.meet.R;
 
-
-public class InstanceIDService extends FirebaseInstanceIdService {
-
+public class InstanceIDService extends FirebaseInstanceIdService
+{
     private static final String TAG = "FirebaseIIDService";
 
     /**
@@ -69,7 +68,7 @@ public class InstanceIDService extends FirebaseInstanceIdService {
                             }
                             else
                             {
-                                // failed to updat token
+                                // failed to update token
                                 Toast.makeText(getApplicationContext(), "Unable to update user token", Toast.LENGTH_LONG).show();
                             }
                         }

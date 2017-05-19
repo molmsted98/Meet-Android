@@ -22,6 +22,9 @@
 
     <!-- Activity Main -->
 
+    <!-- Fragment Find Event -->
+    <string name="fragment_findevent_name">findEvent</string>
+
     <!-- Fragment Group -->
     <string name="fragment_group_name">group</string>
     <string name="group_chat_hint">Write a message&#8230;</string>
@@ -32,6 +35,12 @@
     <string name="accept_button">Accept</string>
     <string name="deny_button">Deny</string>
     <string name="no_groups">You have no groups.</string>
+
+    <!-- Fragment Group Settings -->
+    <string name="fragment_groupsettings_name">groupSettings</string>
+
+    <!-- Fragment Invite -->
+    <string name="invite_url">https://us-central1-meet-c7395.cloudfunctions.net/inviteList</string>
 
     <!-- Fragment Make Group -->
     <string name="fragment_makegroup_name">makeGroup</string>
