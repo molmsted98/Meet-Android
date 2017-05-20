@@ -69,9 +69,7 @@ public class ChatRecyclerViewHolder extends RecyclerView.ViewHolder implements V
                 .with(parent.getParent())
                 .load(url)
                 .centerCrop()
-                .placeholder(R.drawable.com_facebook_button_like_background)
                 .crossFade()
-                .dontAnimate()
                 .into(iv);
     }
 

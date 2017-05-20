@@ -26,7 +26,8 @@ public class AvatarRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     public void setData(ArrayList<String> data)
     {
-        if (urlList != data) {
+        if (urlList != data)
+        {
             urlList = data;
             notifyDataSetChanged();
         }
@@ -41,7 +42,8 @@ public class AvatarRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     {
         private CircleImageView civAvatar;
 
-        public ItemViewHolder(View itemView) {
+        public ItemViewHolder(View itemView)
+        {
             super(itemView);
             civAvatar = (CircleImageView) itemView.findViewById(R.id.civAvatar);
             civAvatar.setOnClickListener(this);
@@ -64,16 +66,14 @@ public class AvatarRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder rawHolder, int position)
+    public void onBindViewHolder(final RecyclerView.ViewHolder rawHolder, int position)
     {
         ItemViewHolder holder = (ItemViewHolder) rawHolder;
         Glide
             .with(era.getParent())
             .load(urlList.get(position))
             .centerCrop()
-            .placeholder(R.drawable.com_facebook_button_like_background)
             .crossFade()
-            .dontAnimate()
             .into(holder.civAvatar);
     }
 
