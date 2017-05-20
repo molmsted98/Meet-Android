@@ -6,37 +6,65 @@
     android:background="#ffffff"
     android:padding="8dp">
 
+    <ProgressBar
+        android:id="@+id/event_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:layout_marginBottom="8dp"
+        android:layout_gravity="center"
+        android:visibility="visible"
+        android:indeterminateDrawable="@drawable/progress"/>
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Recommended for you:"
-        android:textStyle="bold"
-        android:textSize="20dp"
-        android:textColor="#000000"/>
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="100dp"
+        android:text="@string/no_events"
+        android:textSize="25sp"
+        android:id="@+id/tvNoEvents"
+        android:visibility="gone"/>
 
-    <android.support.v7.widget.RecyclerView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:scrollbars="none"
-        android:id="@+id/eventRecycler">
-    </android.support.v7.widget.RecyclerView>
+        android:layout_height="match_parent"
+        android:id="@+id/llEventLists"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Recommended for you:"
+            android:textStyle="bold"
+            android:textSize="20dp"
+            android:textColor="#000000"
+            android:id="@+id/tvFE1"/>
 
-    <TextView
-        android:layout_marginTop="16dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Events your friends are going to:"
-        android:textStyle="bold"
-        android:textSize="20dp"
-        android:textColor="#000000"/>
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:scrollbars="none"
+            android:id="@+id/eventRecycler">
+        </android.support.v7.widget.RecyclerView>
 
-    <android.support.v7.widget.RecyclerView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:scrollbars="none"
-        android:id="@+id/eventRecycler2">
-    </android.support.v7.widget.RecyclerView>
+        <TextView
+            android:layout_marginTop="16dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Events your friends are going to:"
+            android:textStyle="bold"
+            android:textSize="20dp"
+            android:textColor="#000000"
+            android:id="@+id/tvFE2"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:scrollbars="none"
+            android:id="@+id/eventRecycler2">
+        </android.support.v7.widget.RecyclerView>
+    </LinearLayout>
 
 </LinearLayout>

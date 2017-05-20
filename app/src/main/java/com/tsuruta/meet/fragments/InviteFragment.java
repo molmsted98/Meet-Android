@@ -1,8 +1,13 @@
 package com.tsuruta.meet.fragments;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.annotation.TargetApi;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -14,7 +19,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
@@ -45,9 +54,13 @@ public class InviteFragment extends Fragment implements View.OnClickListener
     ArrayList<User> users = new ArrayList<>();
     ArrayList<String> inviteUsers = new ArrayList<>();
     String groupUid;
+    TextView tvNoUsers;
     private RecyclerView.LayoutManager layoutManager;
     private UserRecyclerAdapter adapter;
     private Handler mHandler;
+    private View mProgressView;
+    private View mInviteListView;
+    int shortAnimTime;
 
     public static InviteFragment newInstance(String uid)
     {
@@ -56,24 +69,26 @@ public class InviteFragment extends Fragment implements View.OnClickListener
         return newIf;
     }
 
-    public void userClicked(int position, boolean selected, String uid)
+    public void userClicked(int position, boolean selected)
     {
         if(selected)
         {
-            inviteUsers.add(uid);
+            inviteUsers.add(users.get(position).getUid());
         }
         else
         {
-            inviteUsers.remove(uid);
+            inviteUsers.remove(users.get(position).getUid());
         }
 
         if(inviteUsers.size() == 0)
         {
             btnAddUsers.setEnabled(false);
+            btnAddUsers.setAlpha(.5f);
         }
         else
         {
             btnAddUsers.setEnabled(true);
+            btnAddUsers.setAlpha(1f);
         }
     }
 
@@ -87,8 +102,13 @@ public class InviteFragment extends Fragment implements View.OnClickListener
         recyclerView = (RecyclerView) llLayout.findViewById(R.id.userInviteRecycler);
         ivUserSelect = (ImageView) llLayout.findViewById(R.id.ivUserSelect);
         btnAddUsers = (Button) llLayout.findViewById(R.id.btnInviteUsers);
+        tvNoUsers = (TextView) llLayout.findViewById(R.id.tvNoUsers);
         btnAddUsers.setOnClickListener(this);
         mHandler = new Handler(Looper.getMainLooper());
+        mInviteListView = llLayout.findViewById(R.id.llInviteList);
+        mProgressView = llLayout.findViewById(R.id.invite_progress);
+        shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+        showProgress(true);
 
         parent.setAddVisibility(false);
         parent.setBottomNavigationViewVisibility(false);
@@ -155,9 +175,20 @@ public class InviteFragment extends Fragment implements View.OnClickListener
                         .child(groupUid)
                         .child(getString(R.string.db_members))
                         .child(inviteUsers.get(i))
-                        .setValue(false);
+                        .setValue(false)
+                        .addOnCompleteListener(new OnCompleteListener<Void>()
+                        {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task)
+                            {
+                                if(!task.isSuccessful())
+                                {
+                                    Toast.makeText(parent.getApplicationContext(), "Failed to invite a user", Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        });
             }
-
+            Toast.makeText(parent.getApplicationContext(), "Users invited", Toast.LENGTH_SHORT).show();
             faActivity.getSupportFragmentManager()
                     .beginTransaction()
                     .add(R.id.content_container, GroupListFragment.newInstance(), getString(R.string.fragment_grouplist_name))
@@ -168,10 +199,52 @@ public class InviteFragment extends Fragment implements View.OnClickListener
 
     private void setupRecycler()
     {
+        if(users.size() == 0)
+        {
+            recyclerView.setVisibility(View.GONE);
+            btnAddUsers.setVisibility(View.GONE);
+            tvNoUsers.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            recyclerView.setVisibility(View.VISIBLE);
+            btnAddUsers.setVisibility(View.VISIBLE);
+            tvNoUsers.setVisibility(View.GONE);
+        }
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(faActivity);
         recyclerView.setLayoutManager(layoutManager);
         adapter = new UserRecyclerAdapter(this, users);
         recyclerView.setAdapter(adapter);
+        showProgress(false);
+    }
+
+    /**
+     * Shows the progress UI and hides the login form.
+     */
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+    private void showProgress(final boolean show)
+    {
+        mInviteListView.setVisibility(show ? View.GONE : View.VISIBLE);
+        mInviteListView.animate().setDuration(shortAnimTime).alpha(
+                show ? 0 : 1).setListener(new AnimatorListenerAdapter()
+        {
+            @Override
+            public void onAnimationEnd(Animator animation)
+            {
+                mInviteListView.setVisibility(show ? View.GONE : View.VISIBLE);
+            }
+        });
+
+        mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+        mProgressView.animate().setDuration(shortAnimTime).alpha(
+                show ? 1 : 0).setListener(new AnimatorListenerAdapter()
+        {
+            @Override
+            public void onAnimationEnd(Animator animation)
+            {
+                mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            }
+        });
     }
 }

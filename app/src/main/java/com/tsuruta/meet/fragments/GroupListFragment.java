@@ -98,8 +98,16 @@ public class GroupListFragment extends Fragment
 
     private void setupRecycler()
     {
-        recyclerView.setVisibility(View.VISIBLE);
-        tvNoGroups.setVisibility(View.GONE);
+        if(groups.size() == 0)
+        {
+            recyclerView.setVisibility(View.GONE);
+            tvNoGroups.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            recyclerView.setVisibility(View.VISIBLE);
+            tvNoGroups.setVisibility(View.GONE);
+        }
         recyclerView.setHasFixedSize(false);
         layoutManager = new LinearLayoutManager(faActivity);
         recyclerView.setLayoutManager(layoutManager);

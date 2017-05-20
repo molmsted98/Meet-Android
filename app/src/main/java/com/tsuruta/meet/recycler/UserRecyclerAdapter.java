@@ -30,7 +30,7 @@ public class UserRecyclerAdapter extends RecyclerView.Adapter<UserRecyclerViewHo
 
     public void userClicked(int position, boolean selected)
     {
-        parent.userClicked(position, selected, users.get(position).getUid());
+        parent.userClicked(position, selected);
     }
 
     @Override

@@ -24,6 +24,7 @@
 
     <!-- Fragment Find Event -->
     <string name="fragment_findevent_name">findEvent</string>
+    <string name="no_events">Network Error</string>
 
     <!-- Fragment Group -->
     <string name="fragment_group_name">group</string>
@@ -41,6 +42,7 @@
 
     <!-- Fragment Invite -->
     <string name="invite_url">https://us-central1-meet-c7395.cloudfunctions.net/inviteList</string>
+    <string name="no_users">No users found</string>
 
     <!-- Fragment Make Group -->
     <string name="fragment_makegroup_name">makeGroup</string>
