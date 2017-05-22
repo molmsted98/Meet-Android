@@ -3,6 +3,7 @@ package com.tsuruta.meet.activities;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -48,12 +49,18 @@ public class MainActivity extends AppCompatActivity
                             //TODO: Add the previous fragment to the backstack
                             case R.id.menu_find_events:
                                 getSupportFragmentManager()
+                                        .popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+
+                                getSupportFragmentManager()
                                         .beginTransaction()
                                         .add(R.id.content_container, FindEventFragment.Companion.newInstance(), getString(R.string.fragment_findevent_name))
                                         .addToBackStack(getString(R.string.fragment_findevent_name))
                                         .commit();
                                 break;
                             case R.id.menu_my_groups:
+                                getSupportFragmentManager()
+                                        .popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+
                                 getSupportFragmentManager()
                                         .beginTransaction()
                                         .add(R.id.content_container, GroupListFragment.newInstance(), getString(R.string.fragment_grouplist_name))

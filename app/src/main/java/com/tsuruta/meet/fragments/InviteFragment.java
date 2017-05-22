@@ -11,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -30,6 +31,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.tsuruta.meet.R;
 import com.tsuruta.meet.activities.MainActivity;
+import com.tsuruta.meet.objects.Group;
 import com.tsuruta.meet.objects.User;
 import com.tsuruta.meet.recycler.UserRecyclerAdapter;
 
@@ -55,6 +57,7 @@ public class InviteFragment extends Fragment implements View.OnClickListener
     ArrayList<String> inviteUsers = new ArrayList<>();
     String groupUid;
     TextView tvNoUsers;
+    Group group;
     private RecyclerView.LayoutManager layoutManager;
     private UserRecyclerAdapter adapter;
     private Handler mHandler;
@@ -62,10 +65,11 @@ public class InviteFragment extends Fragment implements View.OnClickListener
     private View mInviteListView;
     int shortAnimTime;
 
-    public static InviteFragment newInstance(String uid)
+    public static InviteFragment newInstance(Group group)
     {
         InviteFragment newIf = new InviteFragment();
-        newIf.groupUid = uid;
+        newIf.group = group;
+        newIf.groupUid = group.getUid();
         return newIf;
     }
 
@@ -190,9 +194,18 @@ public class InviteFragment extends Fragment implements View.OnClickListener
             }
             Toast.makeText(parent.getApplicationContext(), "Users invited", Toast.LENGTH_SHORT).show();
             faActivity.getSupportFragmentManager()
+                    .popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+
+            faActivity.getSupportFragmentManager()
                     .beginTransaction()
                     .add(R.id.content_container, GroupListFragment.newInstance(), getString(R.string.fragment_grouplist_name))
                     .addToBackStack(getString(R.string.fragment_grouplist_name))
+                    .commit();
+
+            faActivity.getSupportFragmentManager()
+                    .beginTransaction()
+                    .add(R.id.content_container, GroupFragment.newInstance(group), getString(R.string.fragment_group_name))
+                    .addToBackStack(getString(R.string.fragment_group_name))
                     .commit();
         }
     }

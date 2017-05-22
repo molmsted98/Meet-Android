@@ -41,6 +41,7 @@
     <string name="fragment_groupsettings_name">groupSettings</string>
 
     <!-- Fragment Invite -->
+    <string name="fragment_invite_name">invite</string>
     <string name="invite_url">https://us-central1-meet-c7395.cloudfunctions.net/inviteList</string>
     <string name="no_users">No users found</string>
 

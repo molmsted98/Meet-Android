@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -80,13 +81,15 @@ public class MakeGroupFragment extends Fragment implements View.OnClickListener
             final boolean mPublic = sPublic.isChecked();
 
             final FirebaseUser currentUser = mAuth.getCurrentUser();
-            Group newGroup = new Group(etGroupName.getText().toString(), currentUser.getUid(),
+            final Group newGroup = new Group(etGroupName.getText().toString(), currentUser.getUid(),
                     sPublic.isChecked(), sInvites.isChecked());
 
             final String newUid = FirebaseDatabase.getInstance()
                     .getReference()
                     .child(getString(R.string.db_groups))
                     .push().getKey();
+
+            newGroup.setUid(newUid);
 
             FirebaseDatabase.getInstance()
                     .getReference()
@@ -115,23 +118,16 @@ public class MakeGroupFragment extends Fragment implements View.OnClickListener
                                             {
                                                 if (task.isSuccessful())
                                                 {
-                                                    // successfully added group, update member lists
+                                                    // successfully updated members
                                                     showProgress(false);
-                                                    if(!mPublic)
-                                                    {
-                                                        faActivity.getSupportFragmentManager()
-                                                                .beginTransaction()
-                                                                .add(R.id.content_container, InviteFragment.newInstance(newUid), "invite")
-                                                                .commit();
-                                                    }
-                                                    else
-                                                    {
-                                                        faActivity.getSupportFragmentManager()
-                                                                .beginTransaction()
-                                                                .add(R.id.content_container, GroupListFragment.newInstance(), getString(R.string.fragment_grouplist_name))
-                                                                .addToBackStack(getString(R.string.fragment_grouplist_name))
-                                                                .commit();
-                                                    }
+                                                    faActivity.getSupportFragmentManager()
+                                                            .popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+
+                                                    faActivity.getSupportFragmentManager()
+                                                            .beginTransaction()
+                                                            .add(R.id.content_container, GroupListFragment.newInstance(), getString(R.string.fragment_grouplist_name))
+                                                            .addToBackStack(getString(R.string.fragment_grouplist_name))
+                                                            .commit();
                                                 }
                                                 else
                                                 {
@@ -153,13 +149,13 @@ public class MakeGroupFragment extends Fragment implements View.OnClickListener
         {
             if(sPublic.isChecked())
             {
-                llInvites.setVisibility(View.VISIBLE);
+                llInvites.setVisibility(View.GONE);
                 sInvites.setChecked(true);
             }
             else
             {
-                llInvites.setVisibility(View.GONE);
-                sInvites.setChecked(false);
+                llInvites.setVisibility(View.VISIBLE);
+                sInvites.setChecked(true);
             }
         }
     }

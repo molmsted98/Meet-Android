@@ -83,6 +83,7 @@ public class GroupListFragment extends Fragment
         tvNoGroups = (TextView)llLayout.findViewById(R.id.tvNoGroups);
         parent.setAddVisibility(true);
         parent.setBottomNavigationViewVisibility(true);
+        parent.setTitle(getString(R.string.app_name));
         showProgress(true);
         shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 

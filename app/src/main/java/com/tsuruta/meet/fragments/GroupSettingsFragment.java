@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -150,7 +151,8 @@ public class GroupSettingsFragment extends Fragment implements View.OnClickListe
         {
             faActivity.getSupportFragmentManager()
                     .beginTransaction()
-                    .add(R.id.content_container, InviteFragment.newInstance(group.getUid()), "invite")
+                    .add(R.id.content_container, InviteFragment.newInstance(group), getString(R.string.fragment_invite_name))
+                    .addToBackStack(getString(R.string.fragment_invite_name))
                     .commit();
         }
         else if(view == btnLeave)
@@ -169,6 +171,9 @@ public class GroupSettingsFragment extends Fragment implements View.OnClickListe
                         {
                             if (task.isSuccessful())
                             {
+                                faActivity.getSupportFragmentManager()
+                                        .popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+
                                 faActivity.getSupportFragmentManager()
                                         .beginTransaction()
                                         .add(R.id.content_container, GroupListFragment.newInstance(), getString(R.string.fragment_grouplist_name))
@@ -199,6 +204,9 @@ public class GroupSettingsFragment extends Fragment implements View.OnClickListe
                             if (task.isSuccessful())
                             {
                                 faActivity.getSupportFragmentManager()
+                                        .popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+
+                                faActivity.getSupportFragmentManager()
                                         .beginTransaction()
                                         .add(R.id.content_container, GroupListFragment.newInstance(), getString(R.string.fragment_grouplist_name))
                                         .addToBackStack(getString(R.string.fragment_grouplist_name))
@@ -216,13 +224,13 @@ public class GroupSettingsFragment extends Fragment implements View.OnClickListe
         {
             if(sPublic.isChecked())
             {
-                llInvites.setVisibility(View.VISIBLE);
+                llInvites.setVisibility(View.GONE);
                 sInvites.setChecked(true);
             }
             else
             {
-                llInvites.setVisibility(View.GONE);
-                sInvites.setChecked(false);
+                llInvites.setVisibility(View.VISIBLE);
+                sInvites.setChecked(true);
             }
         }
     }
@@ -231,6 +239,14 @@ public class GroupSettingsFragment extends Fragment implements View.OnClickListe
     {
         sPublic.setChecked(mPublic);
         sInvites.setChecked(invite);
+        if(sPublic.isChecked())
+        {
+            llInvites.setVisibility(View.GONE);
+        }
+        else
+        {
+            llInvites.setVisibility(View.VISIBLE);
+        }
         etGroupName.setText(group.getTitle());
         if(owner)
         {
