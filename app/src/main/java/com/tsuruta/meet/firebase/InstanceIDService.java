@@ -53,7 +53,7 @@ public class InstanceIDService extends FirebaseInstanceIdService
                     .getReference()
                     .child(getString(R.string.db_users))
                     .child(firebaseUser.getUid())
-                    .child(getString(R.string.db_tokens))
+                    .child(getString(R.string.prop_user_tokens))
                     .child(token)
                     .setValue(true)
                     .addOnCompleteListener(new OnCompleteListener<Void>()

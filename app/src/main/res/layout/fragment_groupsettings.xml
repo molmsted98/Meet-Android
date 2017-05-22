@@ -21,7 +21,7 @@
             android:textColor="@color/colorAccent"
             android:textColorHint="#ffffff"
             android:hint="@string/make_group_hint"
-            android:maxLines="1" />
+            android:maxLines="1"/>
 
         <LinearLayout
             android:layout_width="287dp"
@@ -31,18 +31,21 @@
             android:gravity="center"
             android:layout_gravity="center"
             android:id="@+id/llPublic">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/public_label"
                 android:textColor="#ffffff"
                 android:textSize="20sp"/>
+
             <Switch
                 android:paddingLeft="10dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/sPublic"
                 android:checked="true"/>
+
         </LinearLayout>
 
         <LinearLayout
@@ -53,18 +56,21 @@
             android:gravity="center"
             android:layout_gravity="center"
             android:id="@+id/llInvites">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/invite_label"
                 android:textColor="#ffffff"
                 android:textSize="20sp"/>
+
             <Switch
                 android:paddingLeft="10dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/sInvites"
                 android:checked="true"/>
+
         </LinearLayout>
 
         <Button
@@ -75,7 +81,7 @@
             android:id="@+id/btnSettingsInvite"
             android:padding="8dp"
             android:textColor="@color/colorAccent"
-            android:text="Invite Friends"
+            android:text="@string/invite_button"
             android:background="@drawable/btn_login"/>
 
         <Button
@@ -86,7 +92,7 @@
             android:id="@+id/btnLeaveGroup"
             android:padding="8dp"
             android:textColor="@color/colorAccent"
-            android:text="Leave Group"
+            android:text="@string/leave_button"
             android:background="@drawable/btn_login"/>
 
         <Button
@@ -97,9 +103,11 @@
             android:id="@+id/btnSaveChanges"
             android:padding="8dp"
             android:textColor="@color/colorAccent"
-            android:text="Save Changes"
+            android:text="@string/save_button"
             android:background="@drawable/btn_login"/>
+
     </LinearLayout>
+
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -108,7 +116,8 @@
         android:id="@+id/btnDeleteGroup"
         android:padding="8dp"
         android:textColor="@color/colorAccent"
-        android:text="Delete Group"
+        android:text="@string/delete_button"
         android:background="#CE391A"
         android:layout_alignParentBottom="true"/>
+
 </RelativeLayout>

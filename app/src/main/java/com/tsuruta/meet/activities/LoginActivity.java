@@ -150,7 +150,7 @@ public class LoginActivity extends AppCompatActivity
                                     .getReference()
                                     .child(getString(R.string.db_users))
                                     .child(firebaseUser.getUid())
-                                    .child(getString(R.string.db_tokens))
+                                    .child(getString(R.string.prop_user_tokens))
                                     .child(userToken)
                                     .setValue(true)
                                     .addOnCompleteListener(new OnCompleteListener<Void> ()

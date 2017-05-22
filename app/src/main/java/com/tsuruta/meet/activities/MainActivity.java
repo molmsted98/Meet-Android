@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity
                 .getReference()
                 .child(getString(R.string.db_users))
                 .child(firebaseUser.getUid())
-                .child(getString(R.string.db_tokens))
+                .child(getString(R.string.prop_user_tokens))
                 .child(userToken)
                 .setValue(true)
                 .addOnCompleteListener(new OnCompleteListener<Void> ()
@@ -99,7 +99,7 @@ public class MainActivity extends AppCompatActivity
                                     .getReference()
                                     .child(getString(R.string.db_users))
                                     .child(firebaseUser.getUid())
-                                    .child("avatar")
+                                    .child(getString(R.string.prop_user_avatar))
                                     .setValue(url)
                                     .addOnCompleteListener(new OnCompleteListener<Void> ()
                                     {
@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity
                                                         .getReference()
                                                         .child(getString(R.string.db_users))
                                                         .child(firebaseUser.getUid())
-                                                        .child("name")
+                                                        .child(getString(R.string.prop_user_name))
                                                         .setValue(name)
                                                         .addOnCompleteListener(new OnCompleteListener<Void> ()
                                                         {

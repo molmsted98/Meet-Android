@@ -86,7 +86,7 @@ public class GroupSettingsFragment extends Fragment implements View.OnClickListe
                     .getReference()
                     .child(getString(R.string.db_groups))
                     .child(group.getUid())
-                    .child("public")
+                    .child(getString(R.string.prop_group_public))
                     .setValue(sPublic.isChecked())
                     .addOnCompleteListener(new OnCompleteListener<Void>()
                     {
@@ -99,7 +99,7 @@ public class GroupSettingsFragment extends Fragment implements View.OnClickListe
                                         .getReference()
                                         .child(getString(R.string.db_groups))
                                         .child(group.getUid())
-                                        .child("invite")
+                                        .child(getString(R.string.prop_group_allowsInvites))
                                         .setValue(sInvites.isChecked())
                                         .addOnCompleteListener(new OnCompleteListener<Void>()
                                         {
@@ -112,7 +112,7 @@ public class GroupSettingsFragment extends Fragment implements View.OnClickListe
                                                             .getReference()
                                                             .child(getString(R.string.db_groups))
                                                             .child(group.getUid())
-                                                            .child("title")
+                                                            .child(getString(R.string.prop_group_title))
                                                             .setValue(etGroupName.getText().toString())
                                                             .addOnCompleteListener(new OnCompleteListener<Void>()
                                                             {
@@ -161,7 +161,7 @@ public class GroupSettingsFragment extends Fragment implements View.OnClickListe
                     .getReference()
                     .child(getString(R.string.db_groups))
                     .child(group.getUid())
-                    .child(getString(R.string.db_members))
+                    .child(getString(R.string.prop_group_members))
                     .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                     .removeValue()
                     .addOnCompleteListener(new OnCompleteListener<Void>()

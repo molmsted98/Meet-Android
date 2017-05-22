@@ -14,13 +14,14 @@
         android:layout_marginBottom="8dp"
         android:layout_gravity="center"
         android:indeterminateDrawable="@drawable/progress"
-        android:visibility="visible" />
+        android:visibility="visible"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:id="@+id/llGroupList">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -29,11 +30,14 @@
             android:text="@string/no_groups"
             android:textSize="25sp"
             android:id="@+id/tvNoGroups"/>
+
         <android.support.v7.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/groupRecycler"
             android:scrollbars="vertical"
             android:visibility="gone"/>
+
     </LinearLayout>
+
 </LinearLayout>

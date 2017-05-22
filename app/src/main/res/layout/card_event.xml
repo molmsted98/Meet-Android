@@ -13,10 +13,11 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:orientation="vertical">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="TITLE"
+            android:text=""
             style="@style/Base.TextAppearance.AppCompat.Medium"
             android:textAlignment="center"
             android:textStyle="bold"
@@ -28,10 +29,11 @@
             android:shadowColor="#000000"
             android:layout_gravity="center_horizontal"
             android:id="@+id/tvEventTitle"/>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="CREATED BY"
+            android:text=""
             android:textAlignment="center"
             android:textColor="#ffffff"
             android:layout_gravity="center_horizontal"
@@ -41,6 +43,7 @@
             android:shadowRadius="20"
             android:shadowColor="#000000"
             android:id="@+id/tvEventLocation"/>
+
     </LinearLayout>
 
     <RelativeLayout
@@ -48,19 +51,21 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:orientation="horizontal">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/tvDate"
             android:textColor="#ffffff"
             android:textAlignment="center"
-            android:text="5/17/17"
+            android:text=""
             android:layout_alignParentLeft="true"
             android:shadowDx="1"
             android:shadowDy="1"
             android:shadowRadius="20"
             android:shadowColor="#000000"
             android:textStyle="bold"/>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -68,13 +73,13 @@
             android:textAlignment="center"
             android:textColor="#ffffff"
             android:textStyle="bold"
-            android:text="7:30 PM"
+            android:text=""
             android:shadowDx="1"
             android:shadowDy="1"
             android:shadowRadius="20"
             android:shadowColor="#000000"
             android:layout_alignParentRight="true"/>
-    </RelativeLayout>
 
+    </RelativeLayout>
 
 </RelativeLayout>

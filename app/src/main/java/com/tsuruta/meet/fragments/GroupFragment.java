@@ -176,7 +176,7 @@ public class GroupFragment extends Fragment implements View.OnClickListener, Vie
                                 .getReference()
                                 .child(getString(R.string.db_chats))
                                 .child(group.getUid())
-                                .orderByChild("timestamp")
+                                .orderByChild(getString(R.string.prop_chat_timestamp))
                                 .addChildEventListener(new ChildEventListener()
                                 {
                                     @Override

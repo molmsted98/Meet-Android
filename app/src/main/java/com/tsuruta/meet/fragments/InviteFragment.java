@@ -119,8 +119,8 @@ public class InviteFragment extends Fragment implements View.OnClickListener
 
         OkHttpClient client = new OkHttpClient();
         HttpUrl.Builder urlBuilder = HttpUrl.parse(getString(R.string.invite_url)).newBuilder();
-        urlBuilder.addQueryParameter("userUid", FirebaseAuth.getInstance().getCurrentUser().getUid());
-        urlBuilder.addQueryParameter("groupUid", groupUid);
+        urlBuilder.addQueryParameter(getString(R.string.db_userUid), FirebaseAuth.getInstance().getCurrentUser().getUid());
+        urlBuilder.addQueryParameter(getString(R.string.db_groupUid), groupUid);
         String url = urlBuilder.build().toString();
         Request request = new Request.Builder().url(url).build();
 
@@ -177,7 +177,7 @@ public class InviteFragment extends Fragment implements View.OnClickListener
                         .getReference()
                         .child(getString(R.string.db_groups))
                         .child(groupUid)
-                        .child(getString(R.string.db_members))
+                        .child(getString(R.string.prop_group_members))
                         .child(inviteUsers.get(i))
                         .setValue(false)
                         .addOnCompleteListener(new OnCompleteListener<Void>()

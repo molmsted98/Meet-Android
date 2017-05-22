@@ -54,7 +54,7 @@ public class GroupListFragment extends Fragment
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
     private GroupRecyclerAdapter adapter;
-    String dbGroups, dbMembers, dbUsers;
+    String dbGroups, dbMembers, dbUsers, dbTimestamp;
     int shortAnimTime;
 
     public static GroupListFragment newInstance()
@@ -89,8 +89,9 @@ public class GroupListFragment extends Fragment
 
         //Get database constants
         dbGroups = getString(R.string.db_groups);
-        dbMembers = getString(R.string.db_members);
+        dbMembers = getString(R.string.prop_group_members);
         dbUsers = getString(R.string.db_users);
+        dbTimestamp = getString(R.string.prop_group_timestamp);
 
         cacheUserData();
 
@@ -238,9 +239,9 @@ public class GroupListFragment extends Fragment
                             group.setUid(dataSnapshotChild.getKey());
                             group.setInvited(true);
                             group.setHasJoined(false);
-                            if(dataSnapshotChild.child("timestamp").getValue() != null)
+                            if(dataSnapshotChild.child(dbTimestamp).getValue() != null)
                             {
-                                group.setTimestamp(Long.parseLong(dataSnapshotChild.child("timestamp").getValue().toString()));
+                                group.setTimestamp(Long.parseLong(dataSnapshotChild.child(dbTimestamp).getValue().toString()));
                             }
                             boolean flag = false;
                             group.setTheMembers(getGroupMembers(dataSnapshotChild));
@@ -290,9 +291,9 @@ public class GroupListFragment extends Fragment
                             Group group = dataSnapshotChild.getValue(Group.class);
                             group.setHasJoined(true);
                             group.setUid(dataSnapshotChild.getKey());
-                            if(dataSnapshotChild.child("timestamp").getValue() != null)
+                            if(dataSnapshotChild.child(dbTimestamp).getValue() != null)
                             {
-                                group.setTimestamp(Long.parseLong(dataSnapshotChild.child("timestamp").getValue().toString()));
+                                group.setTimestamp(Long.parseLong(dataSnapshotChild.child(dbTimestamp).getValue().toString()));
                             }
                             group.setTheMembers(getGroupMembers(dataSnapshotChild));
                             groups.add(group);
@@ -330,9 +331,9 @@ public class GroupListFragment extends Fragment
                             Group group = dataSnapshotChild.getValue(Group.class);
                             group.setUid(dataSnapshotChild.getKey());
                             group.setHasJoined(false);
-                            if(dataSnapshotChild.child("timestamp").getValue() != null)
+                            if(dataSnapshotChild.child(dbTimestamp).getValue() != null)
                             {
-                                group.setTimestamp(Long.parseLong(dataSnapshotChild.child("timestamp").getValue().toString()));
+                                group.setTimestamp(Long.parseLong(dataSnapshotChild.child(dbTimestamp).getValue().toString()));
                             }
                             group.setTheMembers(getGroupMembers(dataSnapshotChild));
                             boolean flag = false;

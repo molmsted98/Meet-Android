@@ -108,7 +108,7 @@ public class MakeGroupFragment extends Fragment implements View.OnClickListener
                                         .getReference()
                                         .child(getString(R.string.db_groups))
                                         .child(newUid)
-                                        .child(getString(R.string.db_members))
+                                        .child(getString(R.string.prop_group_members))
                                         .child(currentUser.getUid())
                                         .setValue(true)
                                         .addOnCompleteListener(new OnCompleteListener<Void>()

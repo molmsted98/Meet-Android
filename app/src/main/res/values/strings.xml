@@ -6,10 +6,32 @@
     <!-- Database Strings -->
     <string name="db_chats">chats</string>
     <string name="db_groups">groups</string>
-    <string name="db_members">members</string>
     <string name="db_users">users</string>
-    <string name="db_tokens">tokens</string>
 
+    <!-- URL Params -->
+    <string name="db_userUid">userUid</string>
+    <string name="db_groupUid">groupUid</string>
+
+    <!-- Chat properties -->
+    <string name="prop_chat_message">message</string>
+    <string name="prop_chat_senderUid">senderUid</string>
+    <string name="prop_chat_timestamp">timestamp</string>
+
+    <!-- Group Properties -->
+    <string name="prop_group_lastActivity">activity</string>
+    <string name="prop_group_creator">creator</string>
+    <string name="prop_group_allowsInvites">invite</string>
+    <string name="prop_group_members">members</string>
+    <string name="prop_group_public">public</string>
+    <string name="prop_group_timestamp">timestamp</string>
+    <string name="prop_group_title">title</string>
+    
+    <!-- User Properties -->
+    <string name="prop_user_avatar">avatar</string>
+    <string name="prop_user_email">email</string>
+    <string name="prop_user_name">name</string>
+    <string name="prop_user_tokens">tokens</string>
+    
     <!-- Activity Login -->
     <string name="prompt_email">Phone Number</string>
     <string name="prompt_password">Password (optional)</string>
@@ -25,6 +47,8 @@
     <!-- Fragment Find Event -->
     <string name="fragment_findevent_name">findEvent</string>
     <string name="no_events">Network Error</string>
+    <string name="recommended_events">Recommended for you:</string>
+    <string name="friend_events">Your friends\' events:</string>
 
     <!-- Fragment Group -->
     <string name="fragment_group_name">group</string>
@@ -39,11 +63,16 @@
 
     <!-- Fragment Group Settings -->
     <string name="fragment_groupsettings_name">groupSettings</string>
+    <string name="invite_button">Invite Friends</string>
+    <string name="leave_button">Leave Group</string>
+    <string name="delete_button">Delete</string>
+    <string name="save_button">Save Changes</string>
 
     <!-- Fragment Invite -->
     <string name="fragment_invite_name">invite</string>
     <string name="invite_url">https://us-central1-meet-c7395.cloudfunctions.net/inviteList</string>
     <string name="no_users">No users found</string>
+    <string name="add_users">Add users to group</string>
 
     <!-- Fragment Make Group -->
     <string name="fragment_makegroup_name">makeGroup</string>
